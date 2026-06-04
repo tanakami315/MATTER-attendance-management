@@ -14,4 +14,20 @@ use App\Http\Controllers\AttendanceController;
 |
 */
 
-Route::get('/', [AttendanceController::class, 'index']);
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/attendance', [AttendanceController::class, 'index']);
+    Route::get('/redirect-after-login', function () {
+        if (! auth()->user()->hasVerifiedEmail()) {
+            return redirect('/email/verify');
+        }
+        return redirect()->intended('/attendance');
+    });
+    Route::post('/start-work', [AttendanceController::class, 'start_work']);
+    Route::post('/end-work', [AttendanceController::class, 'end_work']);
+    Route::post('/start-break', [AttendanceController::class, 'start_break']);
+    Route::post('/end-break', [AttendanceController::class, 'end_break']);
+
+    Route::get('/attendance/list', [AttendanceController::class, 'list']);
+});

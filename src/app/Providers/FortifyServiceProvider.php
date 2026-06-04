@@ -10,15 +10,20 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
 use App\Http\Requests\LoginRequest;
+use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
+use App\Http\Responses\LogoutResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
-    public function register(): void
+    public function register()
     {
-        //
+        $this->app->instance(
+            LogoutResponseContract::class,
+            new LogoutResponse()
+        );
     }
 
     /**

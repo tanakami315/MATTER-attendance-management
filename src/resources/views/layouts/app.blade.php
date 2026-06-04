@@ -27,59 +27,47 @@ use Illuminate\Support\Str;
                 !request()->is('register') &&
                 !request()->is('email/verify')
             )
-                <div class="header__search">
-                    <form
-                        class="search-form"
-                        action="{{ url('/search') }}"
-                        method="get"
-                    >
-                        <input type="hidden" name="tab" value="{{ request('tab') }}">
-                        <input
-                            class="search-form__input"
-                            type="text"
-                            name="keyword"
-                            placeholder="なにをお探しですか？"
-                            value="{{request('keyword') }}"
-                        />
-                    </form>
-                </div>
                 <nav class="header__nav">
-                    @if (Auth::check())
-                        <form action="/logout"
-                            method="post"
-                        >
-                            @csrf
-                            <button
-                                class="header__nav-link
-                                    header__nav-link--logout"
-                                type="submit"
-                            >
-                                ログアウト
-                            </button>
-                        </form>
-                    @else
-                        <a
-                            href="/login"
+                    <a
+                        href="/attendance"
+                        class="header__nav-link
+                            header__nav-link--common"
+                    >
+                        勤怠
+                    </a>
+                    <a
+                        href="/attendance/list"
+                        class="header__nav-link
+                            header__nav-link--common"
+                    >
+                        勤怠一覧
+                    </a>
+                    <a
+                        href="/stamp_correction_request/list"
+                        class="header__nav-link
+                            header__nav-link--common"
+                    >
+                        申請
+                    </a>
+                    <a
+                        href="/my_report"
+                        class="header__nav-link
+                            header__nav-link--common"
+                    >
+                        レポート
+                    </a>
+                    <form action="/logout"
+                        method="post"
+                    >
+                        @csrf
+                        <button
                             class="header__nav-link
-                                header__nav-link--common"
+                                header__nav-link--logout"
+                            type="submit"
                         >
-                            ログイン
-                        </a>
-                    @endif
-                        <a
-                            href="/mypage"
-                            class="header__nav-link
-                                header__nav-link--common"
-                        >
-                            マイページ
-                        </a>
-                        <a
-                            href="/sell"
-                            class="header__nav-link
-                                header__nav-link--sell"
-                        >
-                            出品
-                        </a>
+                            ログアウト
+                        </button>
+                    </form>
                 </nav>
             @endif
         </div>
