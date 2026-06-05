@@ -17,6 +17,12 @@ class Attendance extends Model
         'comment',
     ];
 
+    protected $casts = [
+        'date' => 'date',
+        'clock_in' => 'datetime',
+        'clock_out' => 'datetime',
+    ];
+    
     public function breaks()
     {
         return $this->hasMany(BreakTime::class);
