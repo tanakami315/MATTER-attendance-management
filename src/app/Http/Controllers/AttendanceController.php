@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 
@@ -95,10 +96,38 @@ class AttendanceController extends Controller
         return redirect('/attendance');
     }
 
-    public function list(request $request)
+    // 勤怠一覧
+    public function list(Request $request)
     {
-        $user = auth()->user();
-        $attendances = Attendance::where('user_id', $user->id)->get();
-        return view('staff.list', compact('attendances', 'user'));
+        $month = Carbon::parse(
+            $request->month ?? now()->format('Y-m')
+        );
+
+        $start = $month->copy()->startOfMonth();
+        $end = $month->copy()->endOfMonth();
+
+        $attendances = Attendance::where('user_id', auth()->id())
+            ->whereBetween('date', [$start, $end])
+            ->get()
+            ->keyBy(function ($attendance) {
+                return $attendance->date->format('Y-m-d');
+            });
+
+        $dates = [];
+
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+            $dates[] = $date->copy();
+        }
+
+        $prevMonth = $month->copy()->subMonth()->format('Y-m');
+        $nextMonth = $month->copy()->addMonth()->format('Y-m');
+        
+        return view('staff.list', compact(
+            'month',
+            'dates',
+            'attendances',
+            'prevMonth',
+            'nextMonth'
+        ));
     }
 }
