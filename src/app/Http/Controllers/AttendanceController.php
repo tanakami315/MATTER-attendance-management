@@ -98,6 +98,7 @@ class AttendanceController extends Controller
     public function list(request $request)
     {
         $user = auth()->user();
-        return view('staff.list');
+        $attendances = Attendance::where('user_id', $user->id)->get();
+        return view('staff.list', compact('attendances', 'user'));
     }
 }
