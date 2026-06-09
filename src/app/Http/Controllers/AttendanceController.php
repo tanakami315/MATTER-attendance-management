@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\BreakTime;
+use App\Models\Application;
 
 class AttendanceController extends Controller
 {
     public function index()
     {
-        $attendance = Attendance::with('breaks')
+        $attendance = Attendance::with('breakTimes')
             ->where('user_id', auth()->id())
             ->whereDate('date', today())
             ->first();
@@ -29,7 +31,7 @@ class AttendanceController extends Controller
             else {
 
                 // 終了していない休憩
-                $break = $attendance->breaks
+                $break = $attendance->breakTimes
                     ->whereNull('end_break')
                     ->count();
 
@@ -95,10 +97,66 @@ class AttendanceController extends Controller
         return redirect('/attendance');
     }
 
-    public function list(request $request)
+    // 勤怠一覧
+    public function list(Request $request)
     {
-        $user = auth()->user();
-        $attendances = Attendance::where('user_id', $user->id)->get();
-        return view('staff.list', compact('attendances', 'user'));
+        $month = Carbon::parse(
+            $request->month ?? now()->format('Y-m')
+        );
+
+        $start = $month->copy()->startOfMonth();
+        $end = $month->copy()->endOfMonth();
+
+        $attendances = Attendance::with('breakTimes')
+            ->where('user_id', auth()->id())
+            ->whereBetween('date', [$start, $end])
+            ->get()
+            ->keyBy(function ($attendance) {
+                return $attendance->date->format('Y-m-d');
+            });
+
+        $dates = [];
+
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+            $dates[] = $date->copy();
+        }
+
+        $prevMonth = $month->copy()->subMonth()->format('Y-m');
+        $nextMonth = $month->copy()->addMonth()->format('Y-m');
+        
+        return view('staff.list', compact(
+            'month',
+            'dates',
+            'attendances',
+            'prevMonth',
+            'nextMonth'
+        ));
+    }
+
+    // 勤怠詳細
+    public function detail($id)
+    {
+        $attendance = Attendance::with('user','breakTimes')
+            ->findOrFail($id);
+
+        $break1 = $attendance->breakTimes->get(0);
+        $break2 = $attendance->breakTimes->get(1);
+
+        $pendingApplication = Application::where(
+            'attendance_id',
+            $attendance->id
+            )
+            ->where('status', 0)
+            ->exists();
+
+        return view(
+            'staff.detail',
+            compact(
+                'attendance',
+                'break1',
+                'break2', 
+                'pendingApplication'
+            )
+        );
     }
 }

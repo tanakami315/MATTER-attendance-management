@@ -22,9 +22,61 @@ class Attendance extends Model
         'clock_in' => 'datetime',
         'clock_out' => 'datetime',
     ];
-    
-    public function breaks()
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function breakTimes()
     {
         return $this->hasMany(BreakTime::class);
+    }
+
+    // 休憩時間計算(分)
+    public function getBreakMinutesAttribute()
+    {
+        return $this->breakTimes()->get()->sum(function ($breakTime) {
+            if (!$breakTime->start_break || !$breakTime->end_break) {
+                return 0;
+            }
+
+            return $breakTime->start_break->diffInMinutes($breakTime->end_break);
+        });
+    }
+
+    // 勤務時間計算(分)
+    public function getWorkMinutesAttribute()
+    {
+        if (!$this->clock_in || !$this->clock_out) {
+            return 0;
+        }
+
+        return $this->clock_in->diffInMinutes($this->clock_out)
+            - $this->break_minutes;
+    }
+
+    // 休憩時間計算(時間:分)
+    public function getBreakTimeAttribute()
+    {
+        $minutes = $this->break_minutes;
+
+        return sprintf(
+            '%d:%02d',
+            floor($minutes / 60),
+            $minutes % 60
+        );
+    }
+
+    // 勤務時間計算(時間:分)
+    public function getWorkTimeAttribute()
+    {
+        $minutes = $this->work_minutes;
+
+        return sprintf(
+            '%d:%02d',
+            floor($minutes / 60),
+            $minutes % 60
+        );
     }
 }
