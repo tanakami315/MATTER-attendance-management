@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\BreakTime;
+use App\Models\Application;
 
 class AttendanceController extends Controller
 {
     public function index()
     {
-        $attendance = Attendance::with('breaks')
+        $attendance = Attendance::with('breakTimes')
             ->where('user_id', auth()->id())
             ->whereDate('date', today())
             ->first();
@@ -30,7 +31,7 @@ class AttendanceController extends Controller
             else {
 
                 // 終了していない休憩
-                $break = $attendance->breaks
+                $break = $attendance->breakTimes
                     ->whereNull('end_break')
                     ->count();
 
@@ -106,7 +107,8 @@ class AttendanceController extends Controller
         $start = $month->copy()->startOfMonth();
         $end = $month->copy()->endOfMonth();
 
-        $attendances = Attendance::where('user_id', auth()->id())
+        $attendances = Attendance::with('breakTimes')
+            ->where('user_id', auth()->id())
             ->whereBetween('date', [$start, $end])
             ->get()
             ->keyBy(function ($attendance) {
@@ -129,5 +131,32 @@ class AttendanceController extends Controller
             'prevMonth',
             'nextMonth'
         ));
+    }
+
+    // 勤怠詳細
+    public function detail($id)
+    {
+        $attendance = Attendance::with('user','breakTimes')
+            ->findOrFail($id);
+
+        $break1 = $attendance->breakTimes->get(0);
+        $break2 = $attendance->breakTimes->get(1);
+
+        $pendingApplication = Application::where(
+            'attendance_id',
+            $attendance->id
+            )
+            ->where('status', 0)
+            ->exists();
+
+        return view(
+            'staff.detail',
+            compact(
+                'attendance',
+                'break1',
+                'break2', 
+                'pendingApplication'
+            )
+        );
     }
 }
