@@ -35,7 +35,15 @@ $week = ['日', '月', '火', '水', '木', '金', '土'];
                     <span>{{ $date->format('m/d') }}（{{ $week[$date->dayOfWeek] }}）</span>
                     <span>{{ $attendance?->clock_in?->format('H:i') }}</span>
                     <span>{{ $attendance?->clock_out?->format('H:i') }}</span>
-                    <span>詳細</span>
+                    <span>{{ $attendance?->break_time }}</span>
+                    <span>{{ $attendance?->work_time }}</span>   
+                    @if ($attendance)
+                    <a
+                        href="{{ url('/attendance/detail/' . $attendance->id) }}"
+                    >
+                        詳細
+                    </a>
+                    @endif
                 </td>
             </tr>
         @endforeach

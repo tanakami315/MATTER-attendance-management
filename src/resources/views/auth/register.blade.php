@@ -16,7 +16,7 @@
                     class="user-form__label"
                     for="name"
                 >
-                    ユーザー名
+                    名前
                 </label>
                 <input
                     class="user-form__input"
@@ -78,7 +78,7 @@
                     class="user-form__label"
                     for="password_confirmation"
                 >
-                    確認用パスワード
+                    パスワード確認
                 </label>
                 <input
                     class="user-form__input"
