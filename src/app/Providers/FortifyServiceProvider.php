@@ -6,12 +6,16 @@ use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
 use App\Http\Requests\LoginRequest;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
+use App\Http\Responses\LoginResponse;
 use App\Http\Responses\LogoutResponse;
+use App\Models\User;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -20,6 +24,8 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
+
         $this->app->instance(
             LogoutResponseContract::class,
             new LogoutResponse()
@@ -32,6 +38,20 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Fortify::createUsersUsing(CreateNewUser::class);
+
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->email)->first();
+
+            if (! $user || ! Hash::check($request->password, $user->password)) {
+                return null;
+            }
+
+            if ($request->login_type === 'admin') {
+                return $user->admin_status == 1 ? $user : null;
+            }
+
+            return $user;
+        });
     
         Fortify::registerView(function () {
             return view('auth.register');

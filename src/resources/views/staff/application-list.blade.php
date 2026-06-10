@@ -32,11 +32,21 @@
                     <td>{{ $application->comment }}</td>
                     <td>{{ $application->created_at->format('Y-m-d H:i:s') }}</td>
                     <td>
-                        <a
-                            href="{{ url('/attendance/detail/' . $application->attendance->id) }}"
-                        >
-                            詳細
-                        </a>
+                        @if (session('login_type')==='staff')
+                            <a
+                                href="{{ url('/attendance/detail/' . $application->attendance->id) }}"
+                            >
+                                詳細
+                            </a>
+                        @else
+                            <a
+                                href="{{ url('/stamp_correction_request/approve/' . $application->attendance->id) }}" 
+                            >
+                                詳細
+                            </a>
+                        @endif
+
+
                     </td>
                 </tr>
             @endforeach

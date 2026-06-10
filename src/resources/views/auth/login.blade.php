@@ -7,7 +7,6 @@
 @section('content')
 <div class="user-form">
 	<h1 class="user-form__title">ログイン</h1>
-	
 	<form class="user-form__content" action="/login" method="post" novalidate>
 		@csrf
 		<div class="user-form__group">

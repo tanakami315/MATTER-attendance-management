@@ -45,16 +45,60 @@ class ApplicationController extends Controller
     // 申請一覧
     public function applicationList(Request $request)
     {
-        $applications = Application::with('attendance.user')
+        //スタッフ画面（自分の申請のみ） 
+        if (session('login_type')==='staff'){
+            $applications = Application::with('attendance.user')
             ->whereHas('attendance', function ($query) {
                 $query->where('user_id', auth()->id());
             })
             ->latest()
             ->get();
+        } 
+        // 管理者画面（全ての申請）
+        else {
+            $applications = Application::with('attendance.user')
+            ->latest()
+            ->get();
+        }
 
         return view(
             'staff.application-list',
             compact('applications')
         );
     }
+
+    public function showApprove($id)
+    {
+        $attendance = Attendance::with('user','breakTimes')
+            ->findOrFail($id);
+
+        $break1 = $attendance->breakTimes->get(0);
+        $break2 = $attendance->breakTimes->get(1);
+
+        $pendingApplication = Application::where(
+            'attendance_id',
+            $attendance->id
+            )
+            ->where('status', 0)
+            ->exists();
+
+        return view(
+            'admin.admin-approve',
+            compact(
+                'attendance',
+                'break1',
+                'break2', 
+                'pendingApplication'
+            )
+        );
+    }
+
+    // 申請承認
+    public function approve($application_id)
+    {
+        $application = Application::findOrFail($application_id);
+        $application->status = 1;
+        $application->save();  
+    }    
+
 }
