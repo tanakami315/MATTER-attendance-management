@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<form class="application-form" action="/application/{{ $attendance->id }}" method="POST">
+<form class="application-form" action="/admin/approve/{{ $attendance->id }}" method="POST">
     @method('post')
     @csrf
     <div class="attendance-detail">
@@ -26,7 +26,7 @@
                     type="text"
                     name="clock_out"
                     value="{{ $attendance->clock_out?->format('H:i') }}"
-                 @if($pendingApplication) readonly @endif
+                 @if($pendingCorrectRequest) readonly @endif
                 >
             </td>
         </tr>
@@ -43,7 +43,7 @@
                     type="text"
                     name="end_break"
                     value="{{ $break1?->end_break?->format('H:i') }}"
-                    @if($pendingApplication) readonly @endif    
+                    @if($pendingCorrectRequest) readonly @endif    
                 >
             </td>
         </tr>
@@ -59,7 +59,7 @@
                     type="text"
                     name="end_break2"
                     value="{{ $break2?->end_break?->format('H:i') }}"
-                    @if($pendingApplication) readonly @endif
+                    @if($pendingCorrectRequest) readonly @endif
                 >
             </td>
         </tr>
@@ -70,12 +70,12 @@
                     type="text"
                     name="comment"
                     value="{{ $attendance->comment}}" 
-                    @if($pendingApplication) readonly @endif
+                    @if($pendingCorrectRequest) readonly @endif
                 >
             </td>
         </tr>
         <div class="attendance-detail__button">
-            @if ($pendingApplication)
+            @if ($pendingCorrectRequest)
                 <button class="attendance-detail__request" type="submit">承認</button>
             @endif
         </div>

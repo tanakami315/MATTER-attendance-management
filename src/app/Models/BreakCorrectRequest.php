@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ApplicationBreak extends Model
+class BreakCorrectRequest extends Model
 {
     use HasFactory;
     
     protected $fillable = [
-        'application_id',
+        'attendance_correct_request_id',
         'start_break',
         'end_break',
         'status',

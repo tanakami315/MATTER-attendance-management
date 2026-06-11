@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>coachtech勤怠管理アプリ</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     @yield('css')
 </head>
 
@@ -22,11 +22,7 @@ use Illuminate\Support\Str;
                 <img src="{{ asset('image/COACHTECH.png') }}" alt="COACHTECH">
             </a>
             <nav class="header__nav">
-                @if(request()->is(
-                    'attendance',
-                    'attendance/list',
-                    'attendance/detail/*'
-                ))
+                @if(session('login_type')==='staff')
                     <a
                         href="/attendance"
                         class="header__nav-link
@@ -56,15 +52,7 @@ use Illuminate\Support\Str;
                         レポート
                     </a>
 
-                @elseif(request()->is(
-                    'admin/attendance/list',
-                    'admin/attendance/*',
-                    'admin/staff/list',
-                    'admin/attendance/staff/*',
-                    'admin/staff/edit/*',
-                    'stamp_correction_request/list',
-                    'stamp_correction_request/approve/*'
-                ))
+                @elseif(session('login_type')==='admin')
                     <a
                         href="/admin/attendance/list"
                         class="header__nav-link

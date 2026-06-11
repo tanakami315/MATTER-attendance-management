@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\BreakTime;
-use App\Models\Application;
+use App\Models\AttendanceCorrectRequest;
 
 class AttendanceController extends Controller
 {
@@ -142,7 +142,7 @@ class AttendanceController extends Controller
         $break1 = $attendance->breakTimes->get(0);
         $break2 = $attendance->breakTimes->get(1);
 
-        $pendingApplication = Application::where(
+        $pendingCorrectRequest = AttendanceCorrectRequest::where(
             'attendance_id',
             $attendance->id
             )
@@ -155,7 +155,7 @@ class AttendanceController extends Controller
                 'attendance',
                 'break1',
                 'break2', 
-                'pendingApplication'
+                'pendingCorrectRequest'
             )
         );
     }

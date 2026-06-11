@@ -1,0 +1,16 @@
+.detail-table {
+    margin-top: 40px;
+    background: #fff;
+    border-radius: 10px;
+}
+
+.detail-table__inner {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.detail-table__row {
+    height: 170px;
+    border-bottom: 2px solid #E1E1E1;
+}

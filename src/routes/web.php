@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\AttendanceCorrectRequestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 
@@ -34,27 +34,31 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/attendance/list', [AttendanceController::class, 'list']);
     Route::get('/attendance/detail/{attendance_id}', [AttendanceController::class, 'detail']);
-    Route::post('/application/{attendance_id}', [ApplicationController::class, 'store']);
-    Route::get('/stamp_correction_request/list', [ApplicationController::class, 'applicationList']);
+    Route::post('/stamp_correction_request/{attendance_id}', [AttendanceCorrectRequestController::class, 'store']);
+    Route::get('/stamp_correction_request/list', [AttendanceCorrectRequestController::class, 'correctRequestList']);
 });
 
 Route::get('/admin/login', [AuthController::class, 'showLogin'])
-    ->name('admin.admin-login');
+    ->name('admin.admin_login');
 
 Route::middleware(['auth', 'can:admin'])->group(function () {
     // 勤怠一覧（管理者）
     Route::get('/admin/attendance/list', [AdminController::class, 'adminDailyList'])
-        ->name('admin.admin-daily-list');
+        ->name('admin.admin_daily_list');
     // 勤怠詳細（管理者）
     Route::get('/admin/attendance/{attendance_id}', [AttendanceController::class, 'detail']);
     // スタッフ一覧（管理者）
     Route::get('/admin/staff/list', [AdminController::class, 'adminStaffList'])
-        ->name('admin.admin-staff-list');
+        ->name('admin.admin_staff_list');
     // スタッフ別月次勤怠一覧（管理者）
     Route::get('/admin/attendance/staff/{user_id}', [AdminController::class, 'adminMonthlyList'])
-        ->name('admin.admin-monthly-list');
+        ->name('admin.admin_monthly_list');
     Route::get(
-        '/stamp_correction_request/approve/{application_id}', 
-        [ApplicationController::class, 'showApprove']
+        '/stamp_correction_request/approve/{attendance_correct_request_id}', 
+        [AttendanceCorrectRequestController::class, 'showApprove']
+    );
+    Route::post(
+        '/admin/approve/{attendance_correct_request_id}', 
+        [AttendanceCorrectRequestController::class, 'approve']
     );
 });

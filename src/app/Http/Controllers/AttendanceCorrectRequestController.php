@@ -5,17 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
-use App\Models\Application;
-use App\Models\ApplicationBreak;
+use App\Models\AttendanceCorrectRequest;
+use App\Models\BreakCorrectRequest;
 
-class ApplicationController extends Controller
+class AttendanceCorrectRequestController extends Controller
 {
     // 勤務修正申請
     public function store(Request $request, $attendance_id)
     {
         $attendance = Attendance::findOrFail($attendance_id);
 
-        $application = Application::create([
+        $attendanceCorrectRequest = AttendanceCorrectRequest::create([
             'attendance_id' => $attendance->id,
             'clock_in' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $request->clock_in),
             'clock_out' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $request->clock_out),
@@ -24,16 +24,16 @@ class ApplicationController extends Controller
         ]);
 
         if ($request->start_break && $request->end_break) {
-            ApplicationBreak::create([
-                'application_id' => $application->id,
+            BreakCorrectRequest::create([
+                'correct_request_id' => $attendanceCorrectRequest->id,
                 'start_break' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $request->start_break),
                 'end_break' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $request->end_break),
             ]);
         }
 
         if ($request->start_break2 && $request->end_break2) {
-            ApplicationBreak::create([
-                'application_id' => $application->id,
+            BreakCorrectRequest::create([
+                'attendance_correct_request_id' => $attendanceCorrectRequest->id,
                 'start_break' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $request->start_break2),
                 'end_break' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $request->end_break2),
             ]);
@@ -43,11 +43,11 @@ class ApplicationController extends Controller
     }
 
     // 申請一覧
-    public function applicationList(Request $request)
+    public function correctRequestList(Request $request)
     {
         //スタッフ画面（自分の申請のみ） 
         if (session('login_type')==='staff'){
-            $applications = Application::with('attendance.user')
+            $attendanceCorrectRequests = AttendanceCorrectRequest::with('attendance.user')
             ->whereHas('attendance', function ($query) {
                 $query->where('user_id', auth()->id());
             })
@@ -56,14 +56,14 @@ class ApplicationController extends Controller
         } 
         // 管理者画面（全ての申請）
         else {
-            $applications = Application::with('attendance.user')
+            $attendanceCorrectRequests = AttendanceCorrectRequest::with('attendance.user')
             ->latest()
             ->get();
         }
 
         return view(
-            'staff.application-list',
-            compact('applications')
+            'staff.correct_request_list',
+            compact('attendanceCorrectRequests')
         );
     }
 
@@ -75,7 +75,7 @@ class ApplicationController extends Controller
         $break1 = $attendance->breakTimes->get(0);
         $break2 = $attendance->breakTimes->get(1);
 
-        $pendingApplication = Application::where(
+        $pendingCorrectRequest = AttendanceCorrectRequest::where(
             'attendance_id',
             $attendance->id
             )
@@ -83,22 +83,24 @@ class ApplicationController extends Controller
             ->exists();
 
         return view(
-            'admin.admin-approve',
+            'admin.admin_approve',
             compact(
                 'attendance',
                 'break1',
                 'break2', 
-                'pendingApplication'
+                'pendingCorrectRequest'
             )
         );
     }
 
     // 申請承認
-    public function approve($application_id)
+    public function approve($attendance_correct_request_id)
     {
-        $application = Application::findOrFail($application_id);
-        $application->status = 1;
-        $application->save();  
+        $attendanceCorrectRequest = AttendanceCorrectRequest::findOrFail($attendance_correct_request_id);
+        $attendanceCorrectRequest->status = 1;
+        $attendanceCorrectRequest->save(); 
+
+        return redirect('/admin/attendance/list'); 
     }    
 
 }

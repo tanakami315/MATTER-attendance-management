@@ -25,7 +25,7 @@ class AdminController extends Controller
         $prevDay = $day->copy()->subDay()->format('Y-m-d');
         $nextDay = $day->copy()->addDay()->format('Y-m-d');
 
-        return view('admin.admin-daily-list', compact(
+        return view('admin.admin_daily_list', compact(
             'day',
             'attendances',
             'prevDay',
@@ -37,7 +37,7 @@ class AdminController extends Controller
     public function adminStaffList()
     {
         $users = User::all();
-        return view('admin.admin-staff-list', compact('users'));
+        return view('admin.admin_staff_list', compact('users'));
     }
 
     // スタッフ別月次勤怠一覧
@@ -67,7 +67,7 @@ class AdminController extends Controller
         $prevMonth = $month->copy()->subMonth()->format('Y-m');
         $nextMonth = $month->copy()->addMonth()->format('Y-m');
         
-        return view('admin.admin-monthly-list', compact(
+        return view('admin.admin_monthly_list', compact(
             'month',
             'dates',
             'attendances',
