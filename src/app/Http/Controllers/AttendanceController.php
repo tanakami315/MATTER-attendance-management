@@ -133,30 +133,5 @@ class AttendanceController extends Controller
         ));
     }
 
-    // 勤怠詳細
-    public function detail($id)
-    {
-        $attendance = Attendance::with('user','breakTimes')
-            ->findOrFail($id);
-
-        $break1 = $attendance->breakTimes->get(0);
-        $break2 = $attendance->breakTimes->get(1);
-
-        $pendingCorrectRequest = AttendanceCorrectRequest::where(
-            'attendance_id',
-            $attendance->id
-            )
-            ->where('status', 0)
-            ->exists();
-
-        return view(
-            'staff.detail',
-            compact(
-                'attendance',
-                'break1',
-                'break2', 
-                'pendingCorrectRequest'
-            )
-        );
-    }
+   
 }

@@ -51,7 +51,18 @@ use Illuminate\Support\Str;
                     >
                         レポート
                     </a>
-
+                    <form action="/logout"
+                        method="post"
+                    >
+                        @csrf
+                        <button
+                            class="header__nav-link
+                                header__nav-link--logout"
+                            type="submit"
+                        >
+                            ログアウト
+                        </button>
+                    </form>
                 @elseif(session('login_type')==='admin')
                     <a
                         href="/admin/attendance/list"
@@ -74,18 +85,11 @@ use Illuminate\Support\Str;
                     >
                         申請一覧
                     </a>
-                @endif
-
-                @if(!request()->is(
-                    'login',
-                    'register',
-                    'verify/email',
-                    'admin/login'
-                ))
                     <form action="/logout"
                         method="post"
                     >
                         @csrf
+                        <input type="hidden" name="login_type" value="admin">
                         <button
                             class="header__nav-link
                                 header__nav-link--logout"
@@ -95,6 +99,7 @@ use Illuminate\Support\Str;
                         </button>
                     </form>
                 @endif
+
             </nav>
         </div>
     </header>

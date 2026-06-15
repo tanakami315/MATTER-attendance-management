@@ -47,12 +47,12 @@
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__header">
-                <th class="list-table__date">日付</th>
-                <th class="list-table__text">出勤</th>
-                <th class="list-table__text">退勤</th>
-                <th class="list-table__text">休憩</th>
-                <th class="list-table__text">合計</th>
-                <th class="list-table__text">詳細</th>
+                <th class="list-table__text--left list-table__text--width">日付</th>
+                <th class="list-table__text--center">出勤</th>
+                <th class="list-table__text--center">退勤</th>
+                <th class="list-table__text--center">休憩</th>
+                <th class="list-table__text--center">合計</th>
+                <th class="list-table__text--center">詳細</th>
             </tr>
 
             @foreach ($dates as $date)
@@ -61,22 +61,22 @@
                 @endphp
                 
                 <tr class="list-table__row">
-                    <td class="list-table__date">
+                    <td class="list-table__text--left list-table__text--width">
                         {{ $date->format('m/d') }}（{{ $week[$date->dayOfWeek] }}）
                     </td>
-                    <td class="list-table__text">
+                    <td class="list-table__text--center">
                         {{ $attendance?->clock_in?->format('H:i') }}
                     </td>
-                    <td class="list-table__text">
+                    <td class="list-table__text--center">
                         {{ $attendance?->clock_out?->format('H:i') }}
                     </td>
-                    <td class="list-table__text">
+                    <td class="list-table__text--center">
                         {{ $attendance?->break_time }}
                     </td>
-                    <td class="list-table__text">
+                    <td class="list-table__text--center">
                         {{ $attendance?->work_time }}
                     </td>   
-                    <td>
+                    <td class="list-table__text--center">
                         @if ($attendance)
                             <a
                                 class="list-table__link"

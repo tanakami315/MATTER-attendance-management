@@ -5,7 +5,6 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCorrectRequestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/end-break', [AttendanceController::class, 'end_break']);
 
     Route::get('/attendance/list', [AttendanceController::class, 'list']);
-    Route::get('/attendance/detail/{attendance_id}', [AttendanceController::class, 'detail']);
+    Route::get('/attendance/detail/{attendance_id}', [AttendanceCorrectRequestController::class, 'detail']);
     Route::post('/stamp_correction_request/{attendance_id}', [AttendanceCorrectRequestController::class, 'store']);
     Route::get('/stamp_correction_request/list', [AttendanceCorrectRequestController::class, 'correctRequestList']);
 });

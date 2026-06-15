@@ -17,6 +17,11 @@ class AttendanceCorrectRequest extends Model
         'status',
     ];
 
+    protected $casts = [
+        'clock_in' => 'datetime',
+        'clock_out' => 'datetime',
+    ];
+
     public function attendance()
     {
         return $this->belongsTo(Attendance::class);

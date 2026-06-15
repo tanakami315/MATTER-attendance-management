@@ -13,6 +13,10 @@ class BreakCorrectRequest extends Model
         'attendance_correct_request_id',
         'start_break',
         'end_break',
-        'status',
+    ];
+
+    protected $casts = [
+        'start_break' => 'datetime',
+        'end_break' => 'datetime',
     ];
 }

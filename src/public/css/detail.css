@@ -1,16 +1,92 @@
 .detail-table {
-    margin-top: 40px;
     background: #fff;
     border-radius: 10px;
+    letter-spacing: 0.15em;
 }
 
 .detail-table__inner {
     width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
 }
 
 .detail-table__row {
-    height: 170px;
     border-bottom: 2px solid #E1E1E1;
+}
+
+.detail-table__label {
+    width: 300px;
+    padding: 30px 0 30px 60px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #737373;
+    text-align: left;
+}
+
+
+.detail-table__content,
+.detail-table__content--mark,
+.detail-table__content--comment {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000000;
+}
+
+.detail-table__content {
+    width: 100px;
+    text-align: center;
+}
+
+.detail-table__content--mark {
+    width: 50px;
+    text-align: center;
+}
+
+.detail-table__content--comment { 
+    padding-left: 10px;
+    text-align: left;
+}
+
+.detail-table__input,
+.detail-table__textarea {
+    font-size: 16px;
+    font-weight: bold;
+    border: solid 1px #E1E1E1;
+    border-radius: 4px;
+}
+
+.detail-table__input {
+    width: 90px;
+    height: 28px;
+    text-align: center;
+}
+
+.detail-table__textarea {
+    width: 98%;
+    height: 72px;
+    margin: 20px 0;
+    padding-left: 10px;
+    text-align: left;
+}
+
+.request-action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.request-message {
+    font-size:18px;
+    font-weight: 800;
+    color: #FF0000;
+    opacity:  50%;
+    letter-spacing: 0.15em;
+}
+
+.request-button {
+    width: 130px;
+    height: 50px;
+    font-size:22px;
+    font-weight: bold;
+    color: #FFFFFFFF;
+    border-radius: 5px;
+    background-color:#000000;
 }

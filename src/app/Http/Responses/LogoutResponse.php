@@ -8,12 +8,12 @@ class LogoutResponse implements LogoutResponseContract
 {
     public function toResponse($request)
     {
-        if (session('login_type') === 'admin') {
-            session()->flush();
+        $loginType = $request->input('login_type');
+
+        if ($loginType === 'admin') {
             return redirect('/admin/login');
         }
-        session()->flush();
+
         return redirect('/login');
     }
-
 }

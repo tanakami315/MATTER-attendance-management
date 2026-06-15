@@ -48,12 +48,11 @@
     margin-top: 40px;
     background: #fff;
     border-radius: 10px;
+    letter-spacing: 0.15em;
 }
 
 .list-table__inner {
     width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
 }
 
 .list-table__header {
@@ -66,30 +65,38 @@
     border-bottom: 2px solid #E1E1E1;
 }
 
-.list-table__date,
-.list-table__text,
+.list-table__text--center,
+.list-table__text--left,
 .list-table__link {
     font-size: 16px;
     font-weight: bold;
 }
 
-.list-table__date {
-    padding-left: 50px;
+
+.list-table__text--left {
     text-align: left;
 }
 
-.list-table__text,
+.list-table__text--center,
 .list-table__link {
     text-align: center;
 }
 
-.list-table__date,
-.list-table__text {
+.list-table__text--left,
+.list-table__text--center {
     color: #737373;
 }
 
 .list-table__link {
     color: #000000;
     text-decoration: none;
-    display: block;
+}
+
+.list-table__text--width {
+    width: 200px;
+    padding-left: 50px;
+}
+
+.list-table__link--flex {
+    display: flex;
 }
