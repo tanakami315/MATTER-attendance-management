@@ -50,6 +50,8 @@ class AdminController extends Controller
         $start = $month->copy()->startOfMonth();
         $end = $month->copy()->endOfMonth();
 
+        $user = User::findOrFail($user_id);
+
         $attendances = Attendance::with('breakTimes')
             ->where('user_id', $user_id)
             ->whereBetween('date', [$start, $end])
@@ -67,9 +69,10 @@ class AdminController extends Controller
         $prevMonth = $month->copy()->subMonth()->format('Y-m');
         $nextMonth = $month->copy()->addMonth()->format('Y-m');
         
-        return view('admin.admin_monthly_list', compact(
+        return view('common.monthly_list', compact(
             'month',
             'dates',
+            'user',
             'attendances',
             'prevMonth',
             'nextMonth'

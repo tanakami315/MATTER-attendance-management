@@ -1,39 +1,48 @@
 @extends('layouts.app')
 
 @section('css')
+    <!-- 背景色、card、titleを記載 -->
 	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
+	<!-- date-navigation以下を記載 -->
+    <link rel="stylesheet" href="{{ asset('css/date-navigation.css') }}">
+	<!-- list-table以下を記載 -->
 	<link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
 
 @section('content')
 <div class="card">
     <h1 class="title">
-        勤怠一覧
+        @if(session('login_type')==='admin')
+            {{ $user->name }}さんの勤怠一覧
+        @else(session('login_type')==='staff')
+            勤怠一覧
+        @endif
     </h1>
-    <div class="month-navigation">
+
+    <div class="date-navigation">
         <a
-            class="month-navigation__link"
+            class="date-navigation__link"
             href="/attendance/list?month={{ $prevMonth }}"
         >
             <img
-                class="month-navigation__link-icon"
+                class="date-navigation__link-icon"
                 src="{{ asset('image/arrow.png') }}"
             >
             前月
         </a>
-        <span class="month-navigation__current">
+        <span class="date-navigation__current">
             <img
-                class="month-navigation__current-icon"
+                class="date-navigation__current-icon"
                 src="{{ asset('image/calendar.png') }}"
             >
             {{ $month->format('Y/m') }}
         </span>
         <a
-            class="month-navigation__link"
+            class="date-navigation__link"
             href="/attendance/list?month={{ $nextMonth }}"
         >
             <img
-                class="month-navigation__link-icon month-navigation__link-icon--rotate"
+                class="date-navigation__link-icon date-navigation__link-icon--rotate"
                 src="{{ asset('image/arrow.png') }}"
             >
             翌月
@@ -41,18 +50,18 @@
     </div>
 
     @php
-    $week = ['日', '月', '火', '水', '木', '金', '土'];
+        $week = ['日', '月', '火', '水', '木', '金', '土'];
     @endphp
     
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__header">
-                <th class="list-table__text--left list-table__text--width">日付</th>
-                <th class="list-table__text--center">出勤</th>
-                <th class="list-table__text--center">退勤</th>
-                <th class="list-table__text--center">休憩</th>
-                <th class="list-table__text--center">合計</th>
-                <th class="list-table__text--center">詳細</th>
+                <th class="list-table__left-align-text list-table__wide-text">日付</th>
+                <th class="list-table__center-align-text">出勤</th>
+                <th class="list-table__center-align-text">退勤</th>
+                <th class="list-table__center-align-text">休憩</th>
+                <th class="list-table__center-align-text">合計</th>
+                <th class="list-table__center-align-text">詳細</th>
             </tr>
 
             @foreach ($dates as $date)
@@ -61,26 +70,33 @@
                 @endphp
                 
                 <tr class="list-table__row">
-                    <td class="list-table__text--left list-table__text--width">
+                    <td class="list-table__left-align-text list-table__wide-text">
                         {{ $date->format('m/d') }}（{{ $week[$date->dayOfWeek] }}）
                     </td>
-                    <td class="list-table__text--center">
+                    <td class="list-table__center-align-text">
                         {{ $attendance?->clock_in?->format('H:i') }}
                     </td>
-                    <td class="list-table__text--center">
+                    <td class="list-table__center-align-text">
                         {{ $attendance?->clock_out?->format('H:i') }}
                     </td>
-                    <td class="list-table__text--center">
+                    <td class="list-table__center-align-text">
                         {{ $attendance?->break_time }}
                     </td>
-                    <td class="list-table__text--center">
+                    <td class="list-table__center-align-text">
                         {{ $attendance?->work_time }}
                     </td>   
-                    <td class="list-table__text--center">
+                    <td class="list-table__center-align-text">
                         @if ($attendance)
                             <a
                                 class="list-table__link"
                                 href="{{ url('/attendance/detail/' . $attendance->id) }}"
+                            >
+                                詳細
+                            </a>
+                        @else
+                            <a
+                                class="list-table__link"
+                                href="{{ url('/attendance/detail/no_attendance') }}"
                             >
                                 詳細
                             </a>

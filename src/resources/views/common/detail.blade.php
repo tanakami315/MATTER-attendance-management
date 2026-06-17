@@ -6,19 +6,39 @@
 @endsection
 
 @section('content')
+@php
+    $isAdmin = session('login_type') === 'admin';
+    $isPending = $attendanceCorrectRequest?->status === 0;
+@endphp
+
 <div class="card">
     <h1 class="title">
         勤怠詳細
     </h1>
-    <form action="/stamp_correction_request/{{ $attendance->id }}" method="POST">
-        @method('post')
-        @csrf
+    <!-- 申請承認 -->
+    @if ($isAdmin && $isPending)
+        <form action="/admin/approve/{{ $attendanceCorrectRequest->id }}" method="POST">
+            @csrf
+            @method('POST')
+    <!-- 修正 -->
+    @elseif ($isAdmin)
+        <form action="/admin/correct/{{ $attendance->id }}" method="POST">
+            @csrf
+            @method('POST')
+    <!-- 申請 -->
+    @else
+        <form action="/stamp_correction_request/{{ $attendance->id }}" method="POST">
+            @csrf
+    @endif
         <div class="detail-table">
             <table class="detail-table__inner">
                 <tr class="detail-table__row">   
                     <th class="detail-table__label">名前</th>
                     <td class="detail-table__content">
-                        {{ $attendance->user->name }}
+                        @if($attendance)
+                            {{ $attendance->user->name }}
+                        @else
+                            {{  }}
                     </td>
                 </tr>
                 <tr class="detail-table__row">   
@@ -39,7 +59,7 @@
                 <tr class="detail-table__row">
                     <th class="detail-table__label">出勤・退勤</th>
                     <td class="detail-table__content">
-                        @if($attendanceCorrectRequest?->status === 0)
+                        @if ($isPending)
                             <span>
                                 {{ $attendanceCorrectRequest->clock_in?->format('H:i') }}
                             </span>
@@ -56,7 +76,7 @@
                         ～
                     </td>
                     <td class="detail-table__content">
-                        @if($attendanceCorrectRequest?->status === 0)
+                        @if ($isPending)
                             <span>
                                 {{ $attendanceCorrectRequest->clock_out?->format('H:i') }}
                             </span>
@@ -77,7 +97,7 @@
                         休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
                     </th>
                     <td class="detail-table__content">
-                        @if($attendanceCorrectRequest?->status === 0 )
+                        @if ($isPending)
                             @if($breakCorrectRequest)
                                 <span>
                                     {{ $breakCorrectRequest?->start_break?->format('H:i') }}
@@ -96,7 +116,7 @@
                         ～
                     </td>
                     <td class="detail-table__content">
-                        @if($attendanceCorrectRequest?->status === 0)
+                        @if ($isPending)
                             <span>
                                 {{ $breakCorrectRequest?->end_break?->format('H:i') }}
                             </span>
@@ -142,7 +162,7 @@
                     <td 
                         colspan="3"
                         class="detail-table__content--comment">
-                        @if($attendanceCorrectRequest?->status === 0)
+                        @if ($isPending)
                             <p>{{ $attendanceCorrectRequest->comment }}</p>
                         @else
                         <textarea
@@ -154,10 +174,18 @@
             </table>
         </div>
         <div class="request-action">
-            @if($attendanceCorrectRequest?->status === 0)
-                <span class="request-message">*承認待ちのため修正はできません。</span>
-            @else
-                <button class="request-button" type="submit">修正</button>
+            @if ($isAdmin)
+                @if ($isPending)
+                    <button class="request-button" type="submit">承認</button>
+                @else
+                    <button class="request-button" type="submit">修正</button>
+                @endif            
+            @else 
+                @if ($isPending)
+                    <span class="request-message">*承認待ちのため修正はできません。</span>
+                @else
+                    <button class="request-button" type="submit">修正</button>
+                @endif
             @endif
         </div>
     </form>

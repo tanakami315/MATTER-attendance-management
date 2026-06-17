@@ -6,11 +6,10 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\BreakTime;
-use App\Models\AttendanceCorrectRequest;
 
 class AttendanceController extends Controller
 {
-    public function index()
+    public function stamp()
     {
         $attendance = Attendance::with('breakTimes')
             ->where('user_id', auth()->id())
@@ -43,7 +42,7 @@ class AttendanceController extends Controller
             }
         }
 
-        return view('staff.index', compact('attendance', 'status'));
+        return view('staff.stamp', compact('attendance', 'status'));
     }
 
     // 勤務開始
@@ -124,7 +123,7 @@ class AttendanceController extends Controller
         $prevMonth = $month->copy()->subMonth()->format('Y-m');
         $nextMonth = $month->copy()->addMonth()->format('Y-m');
         
-        return view('staff.list', compact(
+        return view('common.monthly_list', compact(
             'month',
             'dates',
             'attendances',

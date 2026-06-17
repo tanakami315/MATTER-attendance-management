@@ -1,52 +1,6 @@
-.month-navigation {
-    margin-top: 50px;
-    width: 100%;
-    height: 60px;
-    background-color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
-}
-
-.month-navigation__link {
-    font-size:16px;
-    font-weight: bold;
-    color: #737373;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-}
-
-.month-navigation__link-icon {
-    margin-right: 10px;
-    width: 20px;
-    height: 15px;
-    opacity: 30%;
-}
-
-.month-navigation__link-icon--rotate {
-    transform: rotate(180deg);
-}
-
-.month-navigation__current {
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.month-navigation__current-icon {
-    margin-right: 10px;
-    width: 25px;
-    height: 25px;
-}
-
 .list-table {
     margin-top: 40px;
-    background: #fff;
+    background: #ffffff;
     border-radius: 10px;
     letter-spacing: 0.15em;
 }
@@ -65,25 +19,25 @@
     border-bottom: 2px solid #E1E1E1;
 }
 
-.list-table__text--center,
-.list-table__text--left,
+.list-table__center-align-text,
+.list-table__left-align-text,
 .list-table__link {
     font-size: 16px;
     font-weight: bold;
 }
 
 
-.list-table__text--left {
+.list-table__left-align-text {
     text-align: left;
 }
 
-.list-table__text--center,
+.list-table__center-align-text,
 .list-table__link {
     text-align: center;
 }
 
-.list-table__text--left,
-.list-table__text--center {
+.list-table__left-align-text,
+.list-table__center-align-text {
     color: #737373;
 }
 
@@ -92,11 +46,11 @@
     text-decoration: none;
 }
 
-.list-table__text--width {
+.list-table__wide-text {
     width: 200px;
     padding-left: 50px;
 }
 
-.list-table__link--flex {
+.list-table__flex-link {
     display: flex;
 }

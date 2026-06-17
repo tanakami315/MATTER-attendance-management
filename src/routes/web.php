@@ -19,7 +19,7 @@ use App\Http\Controllers\AdminController;
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/attendance', [AttendanceController::class, 'index']);
+    Route::get('/attendance', [AttendanceController::class, 'stamp']);
     Route::get('/redirect-after-login', function () {
         if (! auth()->user()->hasVerifiedEmail()) {
             return redirect('/email/verify');
@@ -45,7 +45,8 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::get('/admin/attendance/list', [AdminController::class, 'adminDailyList'])
         ->name('admin.admin_daily_list');
     // 勤怠詳細（管理者）
-    Route::get('/admin/attendance/{attendance_id}', [AttendanceController::class, 'detail']);
+    Route::get('/admin/attendance/{attendance_id}', [AttendanceCorrectRequestController::class, 'detail']);
+    Route::get('/admin/attendance/no_attendance', [AttendanceCorrectRequestController::class, 'detail']);
     // スタッフ一覧（管理者）
     Route::get('/admin/staff/list', [AdminController::class, 'adminStaffList'])
         ->name('admin.admin_staff_list');
@@ -54,10 +55,14 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
         ->name('admin.admin_monthly_list');
     Route::get(
         '/stamp_correction_request/approve/{attendance_correct_request_id}', 
-        [AttendanceCorrectRequestController::class, 'showApprove']
+        [AttendanceCorrectRequestController::class, 'detail']
     );
     Route::post(
         '/admin/approve/{attendance_correct_request_id}', 
         [AttendanceCorrectRequestController::class, 'approve']
+    );
+    Route::post(
+        '/admin/correct/{attendance_id}', 
+        [AttendanceCorrectRequestController::class, 'updateAttendance']
     );
 });

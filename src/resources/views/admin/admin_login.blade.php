@@ -53,7 +53,7 @@
 		</div>
 
 		<div class="button-wrapper">
-			<button class="submit-button" type="submit">管理者にログインする</button>
+			<button class="submit-button" type="submit">管理者ログインする</button>
 		</div>
 	</form>
 </div>

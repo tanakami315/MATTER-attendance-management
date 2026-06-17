@@ -1,33 +1,45 @@
 @extends('layouts.app')
 
 @section('css')
+    <!-- 背景色、card、titleを記載 -->
+	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
+	<!-- list-table以下を記載 -->
 	<link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
 
 @section('content')
-<div class="attendance-table">
-    <table class="attendance-table__inner">
-        <tr class="attendance-table__row">
-            <th class="attendance-table__header">
-                <span class="attendance-table__header-title">名前</span>
-                <span class="attendance-table__header-title">メールアドレス</span>
-                <span class="attendance-table__header-title">月次勤怠</span> 
-            </th>
-        </tr>
-        <tr class="attendance-table__row">
-            <td class="attendance-table__daily">
-                @foreach ($users as $user)
-                    <span>{{ $user?->name }}</span>
-                    <span>{{ $user?->email }}</span>
-                    <a
-                        href="{{ url('admin/attendance/staff/' . $user->id) }}"
-                    >
-                        詳細
-                    </a>
-                @endforeach
-            </td>
-        </tr>
-    </table>
-  </div>
+<div class="card">
+    <h1 class="title">
+        スタッフ一覧
+    </h1>
+
+    <div class="list-table">
+        <table class="list-table__inner">
+            <tr class="list-table__row">
+                <th class="list-table__center-align-text">名前</th>
+                <th class="list-table__center-align-text">メールアドレス</th>
+                <th class="list-table__center-align-text">月次勤怠</th>
+            </tr>
+        
+            @foreach ($users as $user)
+                <tr class="list-table__row">
+                    <td class="list-table__center-align-text">
+                        {{ $user?->name }}
+                    </td>
+                    <td class="list-table__center-align-text">
+                        {{ $user?->email }}
+                    </td>
+                    <td class="list-table__center-align-text">
+                        <a
+                            class="list-table__link"
+                            href="{{ url('admin/attendance/staff/' . $user->id) }}"
+                        >
+                            詳細
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
+        </table>
+    </div>
 </div>
 @endsection

@@ -2,7 +2,7 @@
 
 @section('css')
 	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/index.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/stamp.css') }}">
 @endsection
 
 @section('content')
