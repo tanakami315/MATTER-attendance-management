@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\BreakTime;
+use App\Models\AttendanceCorrectRequest;
+use App\Models\BreakCorrectRequest;
 
-class AttendanceController extends Controller
+class StaffController extends Controller
 {
     public function stamp()
     {
@@ -44,7 +46,7 @@ class AttendanceController extends Controller
 
         return view('staff.stamp', compact('attendance', 'status'));
     }
-
+    
     // 勤務開始
     public function start_work(Request $request)
     {
@@ -97,7 +99,7 @@ class AttendanceController extends Controller
     }
 
     // 勤怠一覧
-    public function list(Request $request)
+    public function monthlyList(Request $request)
     {
         $month = Carbon::parse(
             $request->month ?? now()->format('Y-m')
@@ -123,7 +125,7 @@ class AttendanceController extends Controller
         $prevMonth = $month->copy()->subMonth()->format('Y-m');
         $nextMonth = $month->copy()->addMonth()->format('Y-m');
         
-        return view('common.monthly_list', compact(
+        return view('staff.staff_monthly_list', compact(
             'month',
             'dates',
             'attendances',
@@ -132,5 +134,100 @@ class AttendanceController extends Controller
         ));
     }
 
-   
+    // 勤怠詳細表示
+    public function detail($id)
+    {
+        $attendance = Attendance::with('user','breakTimes')
+            ->findOrFail($id);
+
+        $breakTimes = BreakTime::where(
+            'attendance_id',
+            $attendance->id
+            )
+            ->get();
+
+        $attendanceCorrectRequest = AttendanceCorrectRequest::where(
+            'attendance_id',
+            $attendance->id
+            )
+            ->latest()
+            ->first();
+        
+        $breakCorrectRequests = null;
+
+        if ($attendanceCorrectRequest) {
+            $breakCorrectRequests = BreakCorrectRequest::where(
+                'attendance_correct_request_id',
+                $attendanceCorrectRequest->id
+                )
+                ->latest()
+                ->get();
+
+        }
+
+        return view(
+            'staff.staff_detail',
+            compact(
+                'attendance',
+                'breakTimes',
+                'attendanceCorrectRequest',
+                'breakCorrectRequests'
+            )
+        );
+    }
+
+    // 申請作成
+    public function store(Request $request, $attendance_id)
+    {
+        $attendance = Attendance::findOrFail($attendance_id);
+
+        $attendanceCorrectRequest = AttendanceCorrectRequest::create([
+            'attendance_id' => $attendance->id,
+            'clock_in' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $request->clock_in),
+            'clock_out' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $request->clock_out),
+            'comment' => $request->comment,
+            'status' => 0,
+        ]);
+
+        $startBreaks = $request->input('start_break', []);
+        $endBreaks = $request->input('end_break', []);
+
+        foreach ($startBreaks as $index => $startBreak) {
+            $endBreak = $endBreaks[$index] ?? null;
+
+            if ($startBreak && $endBreak) {
+                BreakCorrectRequest::create([
+                    'attendance_correct_request_id' => $attendanceCorrectRequest->id,
+                    'start_break' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $startBreak),
+                    'end_break' => Carbon::parse($attendance->date->format('Y-m-d') . ' ' . $endBreak),
+                ]);
+            }
+        }
+
+
+        return redirect('/attendance');
+    }
+
+   // 申請一覧
+    public function correctRequestList(Request $request)
+    {
+        $tab = $request->query('tab');
+
+        $query = AttendanceCorrectRequest::with('attendance.user')
+        ->whereHas('attendance', function ($query) {
+            $query->where('user_id', auth()->id());
+        });
+
+        if ($tab === 'pending') {
+            $query->where('status', 0);
+        } elseif ($tab === 'approved') {
+            $query->where('status', 1);
+        }
+        $attendanceCorrectRequests = $query->latest()->get();
+
+        return view(
+            'staff.correct_request_list',
+            compact('attendanceCorrectRequests')
+        );
+    }
 }

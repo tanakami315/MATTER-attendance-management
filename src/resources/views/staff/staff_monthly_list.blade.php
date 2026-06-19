@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.staff_app')
 
 @section('css')
     <!-- 背景色、card、titleを記載 -->
@@ -12,11 +12,7 @@
 @section('content')
 <div class="card">
     <h1 class="title">
-        @if(session('login_type')==='admin')
-            {{ $user->name }}さんの勤怠一覧
-        @else(session('login_type')==='staff')
-            勤怠一覧
-        @endif
+        勤怠一覧
     </h1>
 
     <div class="date-navigation">
@@ -89,16 +85,11 @@
                         @if ($attendance)
                             <a
                                 class="list-table__link"
-                                href="{{ url('/admin/attendance/detail/' . $attendance->id) }}"
+                                href="{{ url('/attendance/detail/' . $attendance->id) }}"
                             >
                                 詳細
                             </a>
                         @else
-                            <a
-                                class="list-table__link"
-                                href="{{ url('/admin/attendance/detail/' . $user->id . '/' . $date) }}">
-                                詳細
-                            </a>
                         @endif
                     </td>
                 </tr>

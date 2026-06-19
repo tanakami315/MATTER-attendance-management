@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin_app')
 
 @section('css')
     <!-- 背景色、card、titleを記載 -->

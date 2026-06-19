@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin_app')
 
 @section('css')
 	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
@@ -7,7 +7,6 @@
 
 @section('content')
 @php
-    $isAdmin = session('login_type') === 'admin';
     $isPending = isset($attendance) && $attendanceCorrectRequest?->status === 0;
 @endphp
 
@@ -16,30 +15,20 @@
         勤怠詳細
     </h1>
     <!-- 管理者申請承認 -->
-    @if ($isAdmin && $isPending)
+    @if ($isPending)
         <form action="/admin/approve/{{ $attendanceCorrectRequest->id }}" method="POST">
             @csrf
             @method('POST')
     <!-- 管理者勤怠修正 -->
-    @elseif ($isAdmin && $attendance)
-        <form action="/admin/correct/{{ $attendance->id }}" method="POST">
-            @csrf
-            @method('PATCH')
-  ！ <!-- 管理者勤怠作成 -->
-    @elseif ($isAdmin)
-        <form action="/admin/correct/{{ $attendance->id }}" method="POST">
-            @csrf
-            @method('PATCH')
-    <!-- スタッフ勤怠修正申請 -->
     @elseif ($attendance)
-        <form action="/stamp_correction_request/{{ $attendance->id }}" method="POST">
+        <form action="/admin/correct/{{ $attendance->id }}" method="POST">
             @csrf
             @method('POST')
- ！  <!-- スタッフ勤怠作成申請 -->
-    @else ($attendance)
-        <form action="/stamp_correction_request/{{ $attendance->id }}" method="POST">
+    <!-- 管理者勤怠作成 -->
+    @else 
+        <form action="/admin/corrsect/{{ $attendance->id }}" method="POST">
             @csrf
-            @method('POST')
+            @method('PATCH')
     @endif
         <div class="detail-table">
             <table class="detail-table__inner">
@@ -186,19 +175,11 @@
             </table>
         </div>
         <div class="request-action">
-            @if ($isAdmin)
-                @if ($isPending)
-                    <button class="request-button" type="submit">承認</button>
-                @else
-                    <button class="request-button" type="submit">修正</button>
-                @endif            
-            @else 
-                @if ($isPending)
-                    <span class="request-message">*承認待ちのため修正はできません。</span>
-                @else
-                    <button class="request-button" type="submit">修正</button>
-                @endif
-            @endif
+            @if ($isPending)
+                <button class="request-button" type="submit">承認</button>
+            @else
+                <button class="request-button" type="submit">修正</button>
+            @endif            
         </div>
     </form>
 </div>

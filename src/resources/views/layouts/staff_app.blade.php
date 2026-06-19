@@ -24,6 +24,49 @@ use Illuminate\Support\Str;
             <a class="header__logo">
                 <img src="{{ asset('image/COACHTECH.png') }}" alt="COACHTECH">
             </a>
+            <nav class="header__nav">
+                <a
+                    href="/attendance"
+                    class="header__nav-link
+                        header__nav-link--common"
+                >
+                    勤怠
+                </a>
+                <a
+                    href="/attendance/list"
+                    class="header__nav-link
+                        header__nav-link--common"
+                >
+                    勤怠一覧
+                </a>
+                <a
+                    href="/stamp_correction_request/list"
+                    class="header__nav-link
+                        header__nav-link--common"
+                >
+                    申請
+                </a>
+                <a
+                    href="/my_report"
+                    class="header__nav-link
+                        header__nav-link--common"
+                >
+                    レポート
+                </a>
+                <form action="/logout"
+                    method="post"
+                >
+                    @csrf
+                    <button
+                        class="header__nav-link
+                            header__nav-link--logout"
+                        type="submit"
+                    >
+                        ログアウト
+                    </button>
+                </form>
+            </nav>
+        </div>
     </header>
     
     <main>

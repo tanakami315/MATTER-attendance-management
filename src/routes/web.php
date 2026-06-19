@@ -1,9 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\AttendanceCorrectRequestController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
@@ -19,22 +18,22 @@ use App\Http\Controllers\AdminController;
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/attendance', [AttendanceController::class, 'stamp']);
+    Route::get('/attendance', [StaffController::class, 'stamp']);
     Route::get('/redirect-after-login', function () {
         if (! auth()->user()->hasVerifiedEmail()) {
             return redirect('/email/verify');
         }
         return redirect()->intended('/attendance');
     });
-    Route::post('/start-work', [AttendanceController::class, 'start_work']);
-    Route::post('/end-work', [AttendanceController::class, 'end_work']);
-    Route::post('/start-break', [AttendanceController::class, 'start_break']);
-    Route::post('/end-break', [AttendanceController::class, 'end_break']);
+    Route::post('/start-work', [StaffController::class, 'start_work']);
+    Route::post('/end-work', [StaffController::class, 'end_work']);
+    Route::post('/start-break', [StaffController::class, 'start_break']);
+    Route::post('/end-break', [StaffController::class, 'end_break']);
 
-    Route::get('/attendance/list', [AttendanceController::class, 'list']);
-    Route::get('/attendance/detail/{attendance_id}', [AttendanceCorrectRequestController::class, 'detail']);
-    Route::post('/stamp_correction_request/{attendance_id}', [AttendanceCorrectRequestController::class, 'store']);
-    Route::get('/stamp_correction_request/list', [AttendanceCorrectRequestController::class, 'correctRequestList']);
+    Route::get('/attendance/list', [StaffController::class, 'monthlyList']);
+    Route::get('/attendance/detail/{attendance_id}', [StaffController::class, 'detail']);
+    Route::post('/stamp_correction_request/{attendance_id}', [StaffController::class, 'store']);
+    Route::get('/stamp_correction_request/list', [StaffController::class, 'correctRequestList']);
 });
 
 Route::get('/admin/login', [AuthController::class, 'showLogin'])
@@ -45,24 +44,27 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::get('/admin/attendance/list', [AdminController::class, 'adminDailyList'])
         ->name('admin.admin_daily_list');
     // 勤怠詳細（管理者）
-    Route::get('/admin/attendance/{attendance_id}', [AttendanceCorrectRequestController::class, 'detail']);
-    Route::get('/admin/attendance/no_attendance', [AttendanceCorrectRequestController::class, 'detail']);
+    // Route::get('/admin/attendance/detail/{user_id}/{date}', [AdminController::class, 'noRecord'])
+    //     ->name('admin.no_record');
+    Route::get('/admin/attendance/{attendance_id}', [AdminController::class, 'detail']);
     // スタッフ一覧（管理者）
     Route::get('/admin/staff/list', [AdminController::class, 'adminStaffList'])
         ->name('admin.admin_staff_list');
     // スタッフ別月次勤怠一覧（管理者）
-    Route::get('/admin/attendance/staff/{user_id}', [AdminController::class, 'adminMonthlyList'])
-        ->name('admin.admin_monthly_list');
+    Route::get('/admin/attendance/staff/{user_id}', [AdminController::class, 'adminMonthlyList']);
+    // 申請一覧（管理者）
+    Route::get('/stamp_correction_request/list', [AdminController::class, 'admincorrectRequestList']);
+    
     Route::get(
         '/stamp_correction_request/approve/{attendance_correct_request_id}', 
-        [AttendanceCorrectRequestController::class, 'detail']
+        [AdminController::class, 'detail']
     );
     Route::post(
         '/admin/approve/{attendance_correct_request_id}', 
-        [AttendanceCorrectRequestController::class, 'approve']
+        [AdminController::class, 'approve']
     );
     Route::post(
         '/admin/correct/{attendance_id}', 
-        [AttendanceCorrectRequestController::class, 'updateAttendance']
+        [AdminController::class, 'updateAttendance']
     );
 });
