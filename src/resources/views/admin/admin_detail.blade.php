@@ -14,32 +14,16 @@
     <h1 class="title">
         勤怠詳細
     </h1>
-    <!-- 管理者申請承認 -->
-    @if ($isPending)
-        <form action="/admin/approve/{{ $attendanceCorrectRequest->id }}" method="POST">
-            @csrf
-            @method('POST')
     <!-- 管理者勤怠修正 -->
-    @elseif ($attendance)
-        <form action="/admin/correct/{{ $attendance->id }}" method="POST">
-            @csrf
-            @method('POST')
-    <!-- 管理者勤怠作成 -->
-    @else 
-        <form action="/admin/corrsect/{{ $attendance->id }}" method="POST">
-            @csrf
-            @method('PATCH')
-    @endif
+    <form action="/admin/correct/{{ $attendance->id }}" method="POST">
+        @csrf
+        @method('POST')
         <div class="detail-table">
             <table class="detail-table__inner">
                 <tr class="detail-table__row">   
                     <th class="detail-table__label">名前</th>
                     <td class="detail-table__content">
-                        @if($attendance)
-                            {{ $attendance->user->name }}
-                        @else
-                            test
-                        @endif
+                        {{ $attendance->user->name }}
                     </td>
                 </tr>
                 <tr class="detail-table__row">   
@@ -92,48 +76,51 @@
                     </td>
                 </tr>
 
-                @foreach($breakTimes as $breakTime)
-                <tr class="detail-table__row">
-                    <th class="detail-table__label">
-                        休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
-                    </th>
-                    <td class="detail-table__content">
-                        @if ($isPending)
-                            @if($breakCorrectRequest)
-                                <span>
-                                    {{ $breakCorrectRequest?->start_break?->format('H:i') }}
-                                </span>
-                            @endif
-                        @else
+                @if ($isPending)
+                    @foreach($breakCorrectRequests as $breakCorrectRequest)
+                    <tr class="detail-table__row">
+                        <th class="detail-table__label">
+                            休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
+                        </th>
+                        <td class="detail-table__content">
+                                {{ $breakCorrectRequest?->start_break?->format('H:i') }}
+                        </td>
+                        <td class="detail-table__content--mark">
+                            ～
+                        </td>
+                        <td class="detail-table__content">
+                                {{ $breakCorrectRequest?->end_break?->format('H:i') }}
+                        </td>
+                    </tr>
+                    @endforeach
+                @else
+                    @foreach($breakTimes as $breakTime)
+                    <tr class="detail-table__row">
+                        <th class="detail-table__label">
+                            休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
+                        </th>
+                        <td class="detail-table__content">
                             <input
                                 class="detail-table__input"
                                 type="text"
                                 name="start_break[]"
                                 value="{{ $breakTime?->start_break?->format('H:i') }}"
                             >
-                        @endif
-                    </td>
-                    <td class="detail-table__content--mark">
-                        ～
-                    </td>
-                    <td class="detail-table__content">
-                        @if ($isPending)
-                            <span>
-                                {{ $breakCorrectRequest?->end_break?->format('H:i') }}
-                            </span>
-                        @else
+                        </td>
+                        <td class="detail-table__content--mark">
+                            ～
+                        </td>
+                        <td class="detail-table__content">
                             <input
                                 class="detail-table__input"
                                 type="text"
                                 name="end_break[]"
                                 value="{{ $breakTime?->end_break?->format('H:i') }}"
                             >
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
+                        </td>
+                    </tr>
+                    @endforeach
 
-                @if(!$attendanceCorrectRequest || $attendanceCorrectRequest->status !== 0)
                     <tr class="detail-table__row">
                         <th class="detail-table__label">
                             休憩{{ $attendance->breakTimes->count() + 1 }}
@@ -168,7 +155,8 @@
                         @else
                         <textarea
                             class="detail-table__textarea"
-                            name="comment"></textarea>
+                            name="comment"
+                        >{{ old('comment', $attendance->comment) }}</textarea>
                         @endif
                     </td>
                 </tr>
@@ -176,7 +164,7 @@
         </div>
         <div class="request-action">
             @if ($isPending)
-                <button class="request-button" type="submit">承認</button>
+                <span class="request-message">*承認待ちのため修正はできません。</span>
             @else
                 <button class="request-button" type="submit">修正</button>
             @endif            

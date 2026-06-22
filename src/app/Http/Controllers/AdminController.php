@@ -35,10 +35,10 @@ class AdminController extends Controller
     }
 
     // 勤怠詳細表示
-    public function detail($id)
+    public function adminDetail($admin_id)
     {
         $attendance = Attendance::with('user','breakTimes')
-            ->findOrFail($id);
+            ->findOrFail($admin_id);
 
         $breakTimes = BreakTime::where(
             'attendance_id',
@@ -53,7 +53,7 @@ class AdminController extends Controller
             ->latest()
             ->first();
         
-        $breakCorrectRequest = null;
+        $breakCorrectRequests = collect();
 
         if ($attendanceCorrectRequest) {
             $breakCorrectRequests = BreakCorrectRequest::where(
@@ -63,7 +63,6 @@ class AdminController extends Controller
                 ->latest()
                 ->get();
 
-            $breakCorrectRequest = $breakCorrectRequests->get(0);
         }
 
         return view(
@@ -72,52 +71,10 @@ class AdminController extends Controller
                 'attendance',
                 'breakTimes',
                 'attendanceCorrectRequest',
-                'breakCorrectRequest'
+                'breakCorrectRequests'
             )
         );
     }
-
-    // スタッフ一覧
-    public function adminStaffList()
-    {
-        $users = User::all();
-        return view('admin.admin_staff_list', compact('users'));
-    }
-
-    // 申請承認
-    public function approve($attendance_correct_request_id)
-    {
-        $attendanceCorrectRequest = AttendanceCorrectRequest::with([
-            'attendance.breakTimes',
-            'breakCorrectRequests',
-        ])->findOrFail($attendance_correct_request_id);
-        
-        $attendance = $attendanceCorrectRequest->attendance;
-
-        $attendance->update([
-            'clock_in' => $attendanceCorrectRequest->clock_in,
-            'clock_out' => $attendanceCorrectRequest->clock_out,
-            'comment' => $attendanceCorrectRequest->comment,
-        ]);
-
-        $attendance->breakTimes()->delete();
-
-        foreach ($attendanceCorrectRequest->breakCorrectRequests as $breakCorrectRequest) {
-            if ($breakCorrectRequest->start_break && $breakCorrectRequest->end_break) {
-                $attendance->breakTimes()->create([
-                    'start_break' => $breakCorrectRequest->start_break,
-                    'end_break' => $breakCorrectRequest->end_break,
-                ]);
-            }
-        }
-                
-        $attendanceCorrectRequest->update([
-            'status' => 1,
-        ]);
-
-        return redirect('/stamp_correction_request/list')
-            ->with('flashSuccess', '申請を承認しました');
-    }    
 
     // 勤怠修正
     public function updateAttendance(Request $request, $attendance_id)
@@ -148,6 +105,13 @@ class AdminController extends Controller
 
         return redirect('/admin/attendance/' . $attendance_id)
             ->with('flashSuccess', '勤怠を更新しました');
+    }
+
+    // スタッフ一覧
+    public function adminStaffList()
+    {
+        $users = User::where('admin_status',0)->get();
+        return view('admin.admin_staff_list', compact('users'));
     }
 
     // スタッフ別月次勤怠一覧
@@ -189,24 +153,57 @@ class AdminController extends Controller
         ));
     }
 
-    // 申請一覧
-    public function adminCorrectRequestList(Request $request)
+    // 申請一覧 passがstaffと同一のためStaffControllerに記載
+
+    // 申請詳細表示
+    public function adminRequestDetail($admin_correct_request_id)
     {
-        $tab = $request->query('tab');
-
-        $query = AttendanceCorrectRequest::with('attendance.user');
-
-        if ($tab === 'pending') {
-            $query->where('status', 0);
-        } elseif ($tab === 'approved') {
-            $query->where('status', 1);
-        }
-
-        $attendanceCorrectRequests = $query->latest()->get();    
-
+        $attendanceCorrectRequest = AttendanceCorrectRequest::with(
+            'attendance.user',
+            'breakCorrectRequests'
+            )
+            ->findOrFail($admin_correct_request_id);
+        
         return view(
-            'admin.admin_correct_request_list',
-            compact('attendanceCorrectRequests')
+            'admin.admin_request_detail',
+            compact(
+                'attendanceCorrectRequest'
+            )
         );
     }
+
+    // 申請承認
+    public function approve($attendance_correct_request_id)
+    {
+        $attendanceCorrectRequest = AttendanceCorrectRequest::with([
+            'attendance.breakTimes',
+            'breakCorrectRequests',
+        ])->findOrFail($attendance_correct_request_id);
+        
+        $attendance = $attendanceCorrectRequest->attendance;
+
+        $attendance->update([
+            'clock_in' => $attendanceCorrectRequest->clock_in,
+            'clock_out' => $attendanceCorrectRequest->clock_out,
+            'comment' => $attendanceCorrectRequest->comment,
+        ]);
+
+        $attendance->breakTimes()->delete();
+
+        foreach ($attendanceCorrectRequest->breakCorrectRequests as $breakCorrectRequest) {
+            if ($breakCorrectRequest->start_break && $breakCorrectRequest->end_break) {
+                $attendance->breakTimes()->create([
+                    'start_break' => $breakCorrectRequest->start_break,
+                    'end_break' => $breakCorrectRequest->end_break,
+                ]);
+            }
+        }
+                
+        $attendanceCorrectRequest->update([
+            'status' => 1,
+        ]);
+
+        return redirect('/stamp_correction_request/list')
+            ->with('flashSuccess', '申請を承認しました');
+    }    
 }

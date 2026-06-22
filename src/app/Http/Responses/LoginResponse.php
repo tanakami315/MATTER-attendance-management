@@ -8,17 +8,9 @@ class LoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-        if ($request->login_type === 'admin') {
-            session([
-                'login_type' => 'admin'
-            ]);
-        
+        if (auth()->user()->admin_status == 1) {
             return redirect('/admin/attendance/list');
         }
-
-        session([
-            'login_type' => 'staff'
-        ]);
         
         return redirect('/attendance');
     }

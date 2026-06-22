@@ -66,23 +66,12 @@
                         {{ $attendanceCorrectRequest->created_at->format('Y/m/d') }}
                     </td>
                     <td class="list-table__center-align-text">
-                        @if (session('login_type')==='staff')
-                            <a
-                                class="list-table__link list-table__flex-link"
-                                href="{{ url('/attendance/detail/' . $attendanceCorrectRequest->attendance->id) }}"
-                            >
-                                詳細
-                            </a>
-                        @else
-                            <a
-                                class="list-table__link list-table__flex-link "
-                                href="{{ url('/stamp_correction_request/approve/' . $attendanceCorrectRequest->attendance->id) }}" 
-                            >
-                                詳細
-                            </a>
-                        @endif
-
-
+                        <a
+                            class="list-table__link list-table__flex-link"
+                            href="{{ url('/attendance/detail/' . $attendanceCorrectRequest->attendance->id) }}"
+                        >
+                            詳細
+                        </a>
                     </td>
                 </tr>
             @endforeach

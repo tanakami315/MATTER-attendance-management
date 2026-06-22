@@ -14,27 +14,15 @@
     <h1 class="title">
         勤怠詳細
     </h1>
-    <!-- スタッフ勤怠修正申請 -->
-    @if ($attendance)
-        <form action="/stamp_correction_request/{{ $attendance->id }}" method="POST">
-            @csrf
-            @method('POST')
-    <!-- スタッフ勤怠作成申請 -->
-    @else
-        <form action="/stamp_correction_request/{{ $attendance->id }}" method="POST">
-            @csrf
-            @method('POST')
-    @endif
+    <form action="/stamp_correction_request/{{ $attendance->id }}" method="POST">
+        @csrf
+        @method('POST')
         <div class="detail-table">
             <table class="detail-table__inner">
                 <tr class="detail-table__row">   
                     <th class="detail-table__label">名前</th>
                     <td class="detail-table__content">
-                        @if($attendance)
-                            {{ $attendance->user->name }}
-                        @else
-                            test
-                        @endif
+                        {{ $attendance->user->name }}
                     </td>
                 </tr>
                 <tr class="detail-table__row">   
@@ -166,7 +154,8 @@
                         @else
                         <textarea
                             class="detail-table__textarea"
-                            name="comment"></textarea>
+                            name="comment"
+                        >{{ old('comment', $attendance->comment) }}</textarea>
                         @endif
                     </td>
                 </tr>

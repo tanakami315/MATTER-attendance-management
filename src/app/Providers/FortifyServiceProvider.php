@@ -43,8 +43,12 @@ class FortifyServiceProvider extends ServiceProvider
                 return null;
             }
 
-            if ($request->login_type === 'admin') {
-                return $user->admin_status == 1 ? $user : null;
+            if ($request->login_type === 'admin' && $user->admin_status != 1) {
+                return null;
+            }
+
+            if ($request->login_type === 'staff' && $user->admin_status != 0) {
+                return null;
             }
 
             return $user;

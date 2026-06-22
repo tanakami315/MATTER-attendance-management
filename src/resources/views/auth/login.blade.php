@@ -9,6 +9,7 @@
 	<h1 class="user-form__title">ログイン</h1>
 	<form class="user-form__content" action="/login" method="post" novalidate>
 		@csrf
+		<input type="hidden" name="login_type" value="staff">
 		<div class="user-form__group">
 			<div class="user-form__item">
 				<label

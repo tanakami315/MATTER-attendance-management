@@ -44,7 +44,7 @@ class StaffController extends Controller
             }
         }
 
-        return view('staff.stamp', compact('attendance', 'status'));
+        return view('staff.staff_stamp', compact('attendance', 'status'));
     }
     
     // 勤務開始
@@ -205,18 +205,27 @@ class StaffController extends Controller
         }
 
 
-        return redirect('/attendance');
+        return redirect('/stamp_correction_request/list')
+            ->with('flashSuccess', '申請を作成しました');
     }
 
-   // 申請一覧
+   // 申請一覧(管理者共通)
     public function correctRequestList(Request $request)
     {
         $tab = $request->query('tab');
 
-        $query = AttendanceCorrectRequest::with('attendance.user')
+        $user = auth()->user();
+
+        // 管理者
+        if ($user->admin_status == 1){
+            $query = AttendanceCorrectRequest::with('attendance.user');
+        } 
+        // スタッフ
+        else {$query = AttendanceCorrectRequest::with('attendance.user')
         ->whereHas('attendance', function ($query) {
             $query->where('user_id', auth()->id());
         });
+        }
 
         if ($tab === 'pending') {
             $query->where('status', 0);
@@ -225,9 +234,20 @@ class StaffController extends Controller
         }
         $attendanceCorrectRequests = $query->latest()->get();
 
-        return view(
-            'staff.correct_request_list',
-            compact('attendanceCorrectRequests')
-        );
+        // 管理者
+        if ($user->admin_status == 1){
+            return view(
+                'admin.admin_correct_request_list',
+                compact('attendanceCorrectRequests')
+            );
+        }
+
+        // スタッフ
+        else {
+            return view(
+                'staff.staff_correct_request_list',
+                compact('attendanceCorrectRequests')
+            );
+        }
     }
 }
