@@ -59,13 +59,13 @@
                     <td class="list-table__left-align-text">
                         {{ $attendanceCorrectRequest->attendance->date->format('Y/m/d') }}
                     </td>
-                    <td class="list-table__left-align-text">
+                    <td class="list-table__left-align-text list-table__comment">
                         {{ $attendanceCorrectRequest->comment }}
                     </td>
                     <td class="list-table__left-align-text">
                         {{ $attendanceCorrectRequest->created_at->format('Y/m/d') }}
                     </td>
-                    <td class="list-table__center-align-text">
+                    <td class="list-table__left-align-text">
                         <a
                             class="list-table__link list-table__flex-link"
                             href="{{ url('/attendance/detail/' . $attendanceCorrectRequest->attendance->id) }}"

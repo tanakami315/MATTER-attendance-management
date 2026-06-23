@@ -35,7 +35,7 @@
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__header">
-                <th class="list-table__center-align-text">状態</th>
+                <th class="list-table__left-align-text">状態</th>
                 <th class="list-table__left-align-text">名前</th>
                 <th class="list-table__left-align-text">対象日時</th>
                 <th class="list-table__left-align-text">申請理由</th>
@@ -44,7 +44,7 @@
             </tr>
             @foreach ($attendanceCorrectRequests as $attendanceCorrectRequest)
                 <tr class="list-table__row">
-                    <td class="list-table__center-align-text">
+                    <td class="list-table__left-align-text">
                         @if ($attendanceCorrectRequest->status == 0)
                             承認待ち
                         @elseif ($attendanceCorrectRequest->status == 1)
@@ -59,13 +59,13 @@
                     <td class="list-table__left-align-text">
                         {{ $attendanceCorrectRequest->attendance->date->format('Y/m/d') }}
                     </td>
-                    <td class="list-table__left-align-text">
+                    <td class="list-table__left-align-text list-table__comment">
                         {{ $attendanceCorrectRequest->comment }}
                     </td>
                     <td class="list-table__left-align-text">
                         {{ $attendanceCorrectRequest->created_at->format('Y/m/d') }}
                     </td>
-                    <td class="list-table__center-align-text">
+                    <td class="list-table__left-align-text">
                         <a
                             class="list-table__link list-table__flex-link "
                             href="{{ url('/stamp_correction_request/approve/' . $attendanceCorrectRequest->id) }}" 

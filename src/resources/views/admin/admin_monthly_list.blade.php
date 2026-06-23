@@ -18,7 +18,7 @@
     <div class="date-navigation">
         <a
             class="date-navigation__link"
-            href="/attendance/list?month={{ $prevMonth }}"
+            href="/admin/attendance/staff/{{ $user->id }}?month={{ $prevMonth }}"
         >
             <img
                 class="date-navigation__link-icon"
@@ -35,7 +35,7 @@
         </span>
         <a
             class="date-navigation__link"
-            href="/attendance/list?month={{ $nextMonth }}"
+            href="/admin/attendance/staff/{{ $user->id }}?month={{ $nextMonth }}"
         >
             <img
                 class="date-navigation__link-icon date-navigation__link-icon--rotate"
@@ -80,26 +80,29 @@
                     </td>
                     <td class="list-table__center-align-text">
                         {{ $attendance?->work_time }}
-                    </td>   
+                    </td>
                     <td class="list-table__center-align-text">
                         @if ($attendance)
-                            <a
-                                class="list-table__link"
-                                href="{{ url('/admin/attendance/' . $attendance->id) }}"
-                            >
-                                詳細
-                            </a>
+                        <a
+                            class="list-table__link"
+                            href="{{ url('/admin/attendance/' . $attendance->id) }}"
+                        >
+                            詳細
+                        </a>
                         @else
-                            <!-- <a
-                                class="list-table__link"
-                                href="{{ url('/admin/attendance/detail/' . $user->id . '/' . $date) }}">
-                                詳細
-                            </a> -->
                         @endif
                     </td>
                 </tr>
             @endforeach
         </table>
+    </div>
+    <div class="request-action">
+        <form
+            action="{{ url('/admin/attendance/staff/' . $user->id . '/export?month=' . $month->format('Y-m')) }}"
+            method="post">
+            @csrf
+            <input class="export-button" type="submit" value="CSV出力">
+        </form>
     </div>
 </div>
 @endsection

@@ -25,7 +25,7 @@
                         {{ $attendance->user->name }}
                     </td>
                 </tr>
-                <tr class="detail-table__row">   
+                <tr class="detail-table__row">
                     <th class="detail-table__label">日付</th>
                     <td class="detail-table__content">
                         {{ $attendance->date->format('Y')}}年
@@ -52,7 +52,7 @@
                                 class="detail-table__input"
                                 type="text"
                                 name="clock_in"
-                                value="{{ $attendance->clock_in?->format('H:i') }}" 
+                                value="{{  old('clock_in', $attendance->clock_in?->format('H:i')) }}" 
                             >
                         @endif
                     </td>
@@ -69,7 +69,7 @@
                                 class="detail-table__input"
                                 type="text"
                                 name="clock_out"
-                                value="{{ $attendance->clock_out?->format('H:i') }}"
+                                value="{{ old('clock_out', $attendance->clock_out?->format('H:i')) }}"
                             >
                         @endif
                     </td>
@@ -93,7 +93,7 @@
                     </tr>
                     @endforeach
                 @else
-                    @foreach($breakTimes as $breakTime)
+                    @foreach($breakTimes as $index => $breakTime)
                     <tr class="detail-table__row">
                         <th class="detail-table__label">
                             休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
@@ -103,7 +103,7 @@
                                 class="detail-table__input"
                                 type="text"
                                 name="start_break[]"
-                                value="{{ $breakTime?->start_break?->format('H:i') }}"
+                                value="{{ old('start_break.' . $index, $breakTime?->start_break?->format('H:i')) }}"
                             >
                         </td>
                         <td class="detail-table__content--mark">
@@ -114,7 +114,7 @@
                                 class="detail-table__input"
                                 type="text"
                                 name="end_break[]"
-                                value="{{ $breakTime?->end_break?->format('H:i') }}"
+                                value="{{ old('end_break.' . $index, $breakTime?->end_break?->format('H:i')) }}"
                             >
                         </td>
                     </tr>
@@ -129,6 +129,7 @@
                                 class="detail-table__input"
                                 type="text"
                                 name="start_break[]"
+                                value="{{ old('start_break.' . $attendance->breakTimes->count()) }}"
                             >
                         </td>
                         <td class="detail-table__content--mark">
@@ -139,6 +140,7 @@
                                 class="detail-table__input"
                                 type="text"
                                 name="end_break[]"
+                                value="{{ old('end_break.' . $attendance->breakTimes->count()) }}"
                             >
                         </td>
                     </tr>
@@ -146,7 +148,7 @@
 
                 <tr class="detail-table__row">
                     <th class="detail-table__label">備考</th>
-                    <td 
+                    <td
                         colspan="3"
                         class="detail-table__content--comment">
                         @if ($isPending)
@@ -161,6 +163,13 @@
                 </tr>
             </table>
         </div>
+        @if ($errors->any())
+            <div class="detail-input-form__error">
+                @foreach (array_unique($errors->all()) as $error)
+                    <p>{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
         <div class="request-action">
             @if ($isPending)
                 <span class="request-message">*承認待ちのため修正はできません。</span>

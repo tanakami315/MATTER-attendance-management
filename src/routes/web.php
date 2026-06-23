@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\AdminController;
 /*
@@ -38,9 +37,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/stamp_correction_request/{attendance_id}', [StaffController::class, 'store']);
     // 申請一覧
     Route::get('/stamp_correction_request/list', [StaffController::class, 'correctRequestList']);
+    // レポート
+    Route::get('/attendance/report', [StaffController::class, 'report']);
 });
 
-Route::get('/admin/login', [AuthController::class, 'showLogin'])
+Route::get('/admin/login', [AdminController::class, 'showLogin'])
     ->name('admin.admin_login');
 
 Route::middleware(['auth', 'can:admin'])->group(function () {
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
         ->name('admin.admin_staff_list');
     // スタッフ別月次勤怠一覧（管理者）
     Route::get('/admin/attendance/staff/{user_id}', [AdminController::class, 'adminMonthlyList']);
+    Route::post('/admin/attendance/staff/{user_id}/export', [AdminController::class, 'export']);
     // 申請詳細（管理者）
     Route::get(
         '/stamp_correction_request/approve/{attendance_correct_request_id}', 

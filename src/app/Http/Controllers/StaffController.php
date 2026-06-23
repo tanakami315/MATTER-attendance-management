@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\AttendanceRequest;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\BreakTime;
@@ -177,7 +178,7 @@ class StaffController extends Controller
     }
 
     // 申請作成
-    public function store(Request $request, $attendance_id)
+    public function store(AttendanceRequest $request, $attendance_id)
     {
         $attendance = Attendance::findOrFail($attendance_id);
 
@@ -249,5 +250,47 @@ class StaffController extends Controller
                 compact('attendanceCorrectRequests')
             );
         }
+    }
+
+    // レポート
+    public function report()
+    {
+        $monthlyWorkTotals = collect();
+
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i)->format('Y-m');
+
+            $monthlyWorkTotals[$month] = [
+                'minutes' => 0,
+                'time' => '0h00m',
+            ];
+        }
+
+        Attendance::with('breakTimes')
+            ->where('user_id', auth()->id())
+            ->where('date', '>=', now()->subMonths(5)->startOfMonth())
+            ->get()
+            ->groupBy(function ($attendance) {
+                return $attendance->date->format('Y-m');
+            })
+            ->each(function ($attendances, $month) use (&$monthlyTotals) {
+
+                $minutes = $attendances->sum(function ($attendance) {
+                    return $attendance->work_minutes;
+                });
+
+                $monthlyTotals[$month] = [
+                    'minutes' => $minutes,
+                    'time' => sprintf(
+                        '%dh%02dm',
+                        floor($minutes / 60),
+                        $minutes % 60
+                    ),
+                ];
+            });
+
+        return view('staff.staff_report', compact(
+            'monthlyTotals'
+        ));
     }
 }

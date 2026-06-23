@@ -3,15 +3,31 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AttendanceRequest;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use App\Models\AttendanceCorrectRequest;
 use App\Models\BreakCorrectRequest;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminController extends Controller
 {
+    // ログイン
+    public function showLogin(Request $request)
+    {
+        if (Auth::check()) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        
+            return redirect('/admin/login');
+        }
+        return view('admin.admin_login');
+    }
+
     // 日別勤怠一覧
     public function adminDailyList(Request $request)
     {
@@ -77,7 +93,7 @@ class AdminController extends Controller
     }
 
     // 勤怠修正
-    public function updateAttendance(Request $request, $attendance_id)
+    public function updateAttendance(AttendanceRequest $request, $attendance_id)
     {
         $attendance = Attendance::with(['breakTimes'])
             ->findOrFail($attendance_id);
@@ -205,5 +221,61 @@ class AdminController extends Controller
 
         return redirect('/stamp_correction_request/list')
             ->with('flashSuccess', '申請を承認しました');
-    }    
+    }
+
+    // CSV出力
+    public function export($user_id, Request $request)
+    {
+        $month = Carbon::parse($request->month ?? now()->format('Y-m'));
+
+        $start = $month->copy()->startOfMonth();
+        $end = $month->copy()->endOfMonth();
+
+        $user = User::findOrFail($user_id);
+
+        $attendances = Attendance::with('breakTimes')
+            ->where('user_id', $user_id)
+            ->whereBetween('date', [$start, $end])
+            ->get()
+            ->keyBy(function ($attendance) {
+                return $attendance->date->format('Y-m-d');
+            });
+
+        $dates = [];
+
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+            $dates[] = $date->copy();
+        }
+
+        $fileName = $user->name . '_' . $month->format('Y-m') . '_attendance.csv';
+
+        return new StreamedResponse(function () use ($dates, $attendances) {
+            $handle = fopen('php://output', 'w');
+
+            $header = ['日付', '出勤', '退勤', '休憩', '合計'];
+            mb_convert_variables('SJIS-win', 'UTF-8', $header);
+            fputcsv($handle, $header);
+
+            foreach ($dates as $date) {
+                $attendance = $attendances->get($date->format('Y-m-d'));
+
+                $row = [
+                    $date->format('Y/m/d'),
+                    $attendance?->clock_in?->format('H:i') ?? '',
+                    $attendance?->clock_out?->format('H:i') ?? '',
+                    $attendance?->break_time ?? '',
+                    $attendance?->work_time ?? '',
+                ];
+
+                mb_convert_variables('SJIS-win', 'UTF-8', $row);
+                fputcsv($handle, $row);
+            }
+
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
+    }
+
 }
