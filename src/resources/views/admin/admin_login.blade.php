@@ -6,10 +6,10 @@
 
 @section('content')
 <div class="user-form">
-	<h1 class="user-form__title">ログイン</h1>
+	<h1 class="user-form__title">管理者ログイン</h1>
 	<form class="user-form__content" action="/login" method="post" novalidate>
 		@csrf
-		<input type="hidden" name="login_type" value="staff">
+		<input type="hidden" name="login_type" value="admin">
 		<div class="user-form__group">
 			<div class="user-form__item">
 				<label
@@ -53,11 +53,8 @@
 		</div>
 
 		<div class="button-wrapper">
-			<button class="submit-button" type="submit">ログインする</button>
+			<button class="submit-button" type="submit">管理者ログインする</button>
 		</div>
 	</form>
-	<div class="auth-link">
-		<a class="auth-link__item" href="/register">会員登録はこちら</a>
-	</div>
 </div>
 @endsection

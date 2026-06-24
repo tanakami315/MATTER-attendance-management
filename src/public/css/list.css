@@ -1,0 +1,83 @@
+.list-table {
+    margin-top: 40px;
+    background: #ffffff;
+    border-radius: 10px;
+    letter-spacing: 0.15em;
+}
+
+.list-table__inner {
+    width: 100%;
+}
+
+.list-table__header {
+    height: 50px;
+    border-bottom: 3px solid #E1E1E1;
+}
+
+.list-table__row {
+    border-bottom: 2px solid #E1E1E1;
+}
+
+.list-table__center-align-text,
+.list-table__left-align-text,
+.list-table__link {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+.list-table__left-align-text {
+    padding-left: 20px;
+    text-align: left;
+}
+
+.list-table__center-align-text,
+.list-table__link {
+    text-align: center;
+}
+
+.list-table__left-align-text,
+.list-table__center-align-text {
+    color: #737373;
+}
+
+.list-table__link {
+    color: #000000;
+    text-decoration: none;
+}
+
+.list-table__wide-text {
+    width: 200px;
+    padding-left: 50px;
+}
+
+.list-table__flex-link {
+    display: flex;
+}
+
+.list-table__comment {
+    width: 250px;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.request-action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.export-button {
+    width: 184px;
+    height: 50px;
+    font-size:22px;
+    font-weight: bold;
+    color: #FFFFFFFF;
+    border-radius: 5px;
+    background-color:#000000;
+}

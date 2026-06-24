@@ -1,14 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.staff_app')
 
 @section('css')
-	<link rel="stylesheet" href="{{ asset('css/index.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/stamp.css') }}">
 @endsection
 
 @section('content')
-	<div class="attendance-status">
+	<div class="attendance-form">
 		<!-- 勤務前 -->
 		@if($status === 'before_work')
-			<p>勤務外</p>
+			<div class="attendance-status">勤務外</div>
 			<div class="attendance-date" id="current-date"></div>
 			<div class="attendance-time" id="current-time"></div>
 			<form
@@ -26,37 +27,39 @@
 		
 		<!-- 勤務中 -->
 		@elseif($status === 'working')
-			<p>勤務中</p>
+			<div class="attendance-status">勤務中</div>
 			<div class="attendance-date" id="current-date"></div>
 			<div class="attendance-time" id="current-time"></div>
-			<form
-				action="/end-work"
-				method="POST"
-			>
-				@csrf
-				<button
-					type="submit"
-					class="attendance-button"
+			<div class="button-form">
+				<form
+					action="/end-work"
+					method="POST"
 				>
-					退勤
-				</button>
-			</form>
-			<form
-				action="/start-break"
-				method="POST"
-			>
-				@csrf
-				<button
-					type="submit"
-					class="break-button"
+					@csrf
+					<button
+						type="submit"
+						class="attendance-button"
+					>
+						退勤
+					</button>
+				</form>
+				<form
+					action="/start-break"
+					method="POST"
 				>
-					休憩入
-				</button>
-			</form>
+					@csrf
+					<button
+						type="submit"
+						class="break-button"
+					>
+						休憩入
+					</button>
+				</form>
+			</div>
 
 		<!-- 休憩中 -->
 		@elseif($status === 'break')
-			<p>休憩中</p>
+			<div class="attendance-status">休憩中</div>
 			<div class="attendance-date" id="current-date"></div>
 			<div class="attendance-time" id="current-time"></div>
 			<form
@@ -74,7 +77,7 @@
 
 		<!-- 勤務後 -->
 		@elseif($status === 'after_work')
-			<p>勤務外</p>
+			<div class="attendance-status">勤務外</div>
 			<div class="attendance-date" id="current-date"></div>
 			<div class="attendance-time" id="current-time"></div>
 			<div class="attendance-comment">
