@@ -8,7 +8,6 @@ class LoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-        // dd(auth()->user()->id, auth()->user()->admin_status);
         if (auth()->user()->admin_status == 1) {
             return redirect('/admin/attendance/list');
         }

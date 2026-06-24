@@ -17,6 +17,11 @@ use App\Http\Controllers\AdminController;
 
 
 Route::middleware('auth')->group(function () {
+    // 申請一覧
+    Route::get('/stamp_correction_request/list', [StaffController::class, 'correctRequestList']);
+});
+
+Route::middleware(['auth', 'can:staff'])->group(function () {
     // 勤怠登録画面
     Route::get('/attendance', [StaffController::class, 'stamp']);
     Route::get('/redirect-after-login', function () {
@@ -35,8 +40,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/detail/{attendance_id}', [StaffController::class, 'detail']);
     // 申請登録
     Route::post('/stamp_correction_request/{attendance_id}', [StaffController::class, 'store']);
-    // 申請一覧
-    Route::get('/stamp_correction_request/list', [StaffController::class, 'correctRequestList']);
     // レポート
     Route::get('/attendance/report', [StaffController::class, 'report']);
 });
