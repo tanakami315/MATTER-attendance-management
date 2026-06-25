@@ -33,10 +33,15 @@ class Attendance extends Model
         return $this->hasMany(BreakTime::class);
     }
 
+    public function attendanceCorrectRequests()
+    {
+        return $this->hasMany(AttendanceCorrectRequest::class);
+    }
+
     // 休憩時間計算(分)
     public function getBreakMinutesAttribute()
     {
-        return $this->breakTimes()->get()->sum(function ($breakTime) {
+        return $this->breakTimes->sum(function ($breakTime) {
             if (!$breakTime->start_break || !$breakTime->end_break) {
                 return 0;
             }
