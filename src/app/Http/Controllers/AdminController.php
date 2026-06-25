@@ -8,7 +8,6 @@ use App\Http\Requests\AttendanceRequest;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Attendance;
-use App\Models\BreakTime;
 use App\Models\AttendanceCorrectRequest;
 use App\Models\BreakCorrectRequest;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -56,11 +55,7 @@ class AdminController extends Controller
         $attendance = Attendance::with('user','breakTimes')
             ->findOrFail($admin_id);
 
-        $breakTimes = BreakTime::where(
-            'attendance_id',
-            $attendance->id
-            )
-            ->get();
+        $breakTimes = $attendance->breakTimes;
 
         $attendanceCorrectRequest = AttendanceCorrectRequest::where(
             'attendance_id',
