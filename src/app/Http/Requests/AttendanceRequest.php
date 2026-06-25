@@ -51,7 +51,8 @@ class AttendanceRequest extends FormRequest
                 'before:clock_out',
             ],
             'comment' =>[
-                'required'
+                'required',
+                'max:255',
             ]
         ];
     }
@@ -72,6 +73,8 @@ class AttendanceRequest extends FormRequest
             'start_break.*.after' => '休憩時間が不適切な値です',
             'start_break.*.before' => '休憩時間が不適切な値です',
             'end_break.*.before' => '休憩時間もしくは退勤時間が不適切な値です',
+
+            'comment.max' => '備考は255文字以内で入力してください'
         ];
     }
 

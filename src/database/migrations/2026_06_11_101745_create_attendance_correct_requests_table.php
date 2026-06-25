@@ -18,7 +18,7 @@ class CreateAttendanceCorrectRequestsTable extends Migration
             $table->foreignId('attendance_id')->constrained()->cascadeOnDelete();
             $table->datetime('clock_in');
             $table->datetime('clock_out');
-            $table->text('comment');
+            $table->string('comment');
             $table->integer('status')->default(0);
             $table->timestamps();
         });

@@ -10,6 +10,54 @@ use Carbon\Carbon;
 
 class AttendanceTableSeeder extends Seeder
 {
+    private function isHoliday(Carbon $date): bool
+    {
+        // 土日
+        if ($date->isWeekend()) {
+            return true;
+        }
+
+        // 12/30〜1/3 年末年始は休暇想定
+        if (
+            $date->format('m-d') >= '12-30'
+            || $date->format('m-d') <= '01-03'
+        ) {
+            return true;
+        }
+
+        // 4/29〜5/10 GWは休暇がある想定
+        if (
+            $date->format('m-d') >= '04-29'
+            && $date->format('m-d') <= '05-10'
+        ) {
+            return true;
+        }
+
+        // 祝日
+        $holidays = [
+            '2026-01-01',
+            '2026-01-12',
+            '2026-02-11',
+            '2026-02-23',
+            '2026-03-20',
+            '2026-04-29',
+            '2026-05-03',
+            '2026-05-04',
+            '2026-05-05',
+            '2026-05-06',
+            '2026-07-20',
+            '2026-08-11',
+            '2026-09-21',
+            '2026-09-22',
+            '2026-09-23',
+            '2026-10-12',
+            '2026-11-03',
+            '2026-11-23',
+        ];
+
+        return in_array($date->format('Y-m-d'), $holidays, true);
+    }
+
     public function run()
     {
         $user1 = User::where('email', 'user1@example.com')->firstOrFail();
@@ -28,7 +76,7 @@ class AttendanceTableSeeder extends Seeder
             $count = 0;
 
             for ($date = $month->copy(); $date->month === $month->month; $date->addDay()) {
-                if ($date->isWeekend()) {
+                if ($this->isHoliday($date)) {
                     continue;
                 }
 
@@ -46,7 +94,7 @@ class AttendanceTableSeeder extends Seeder
         $workDates = [];
 
         for ($date = $thisMonth->copy(); $date->month === $thisMonth->month; $date->addDay()) {
-            if (!$date->isWeekend()) {
+            if (!$this->isHoliday($date)) {
                 $workDates[] = $date->copy();
             }
 
@@ -83,7 +131,7 @@ class AttendanceTableSeeder extends Seeder
             $count = 0;
 
             for ($date = $month->copy(); $date->month === $month->month; $date->addDay()) {
-                if ($date->isWeekend()) {
+                if ($this->isHoliday($date)) {
                     continue;
                 }
 
@@ -101,7 +149,7 @@ class AttendanceTableSeeder extends Seeder
         $workDates = [];
 
         for ($date = $thisMonth->copy(); $date->month === $thisMonth->month; $date->addDay()) {
-            if (!$date->isWeekend()) {
+            if (!$this->isHoliday($date)) {
                 $workDates[] = $date->copy();
             }
 
@@ -180,4 +228,6 @@ class AttendanceTableSeeder extends Seeder
 
             return $attendance;
         }
+
+    
 }

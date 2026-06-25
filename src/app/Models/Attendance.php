@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\BreakTime;
+use App\Models\AttendanceCorrectRequest;
 
 class Attendance extends Model
 {
@@ -41,7 +42,7 @@ class Attendance extends Model
     // 休憩時間計算(分)
     public function getBreakMinutesAttribute()
     {
-        return $this->breakTimes->sum(function ($breakTime) {
+        return $this->breakTimes()->get()->sum(function ($breakTime) {
             if (!$breakTime->start_break || !$breakTime->end_break) {
                 return 0;
             }

@@ -53,33 +53,21 @@ class AdminController extends Controller
     // 勤怠詳細表示
     public function adminDetail($admin_id)
     {
-        $attendance = Attendance::with('user','breakTimes')
-            ->findOrFail($admin_id);
+        $attendance = Attendance::with([
+            'user',
+            'breakTimes',
+            'attendanceCorrectRequests.breakCorrectRequests',
+        ])->findOrFail($admin_id);
 
-        $breakTimes = BreakTime::where(
-            'attendance_id',
-            $attendance->id
-            )
-            ->get();
+        $breakTimes = $attendance->breakTimes;
 
-        $attendanceCorrectRequest = AttendanceCorrectRequest::where(
-            'attendance_id',
-            $attendance->id
-            )
-            ->latest()
+        $attendanceCorrectRequest = $attendance-> attendanceCorrectRequests
+            ->sortByDesc('created_at')
             ->first();
         
-        $breakCorrectRequests = collect();
-
-        if ($attendanceCorrectRequest) {
-            $breakCorrectRequests = BreakCorrectRequest::where(
-                'attendance_correct_request_id',
-                $attendanceCorrectRequest->id
-                )
-                ->latest()
-                ->get();
-
-        }
+        $breakCorrectRequests = $attendanceCorrectRequest
+            ? $attendanceCorrectRequest->breakCorrectRequests
+            : collect();
 
         return view(
             'admin.admin_detail',
@@ -95,8 +83,7 @@ class AdminController extends Controller
     // 勤怠修正
     public function updateAttendance(AttendanceRequest $request, $attendance_id)
     {
-        $attendance = Attendance::with(['breakTimes'])
-            ->findOrFail($attendance_id);
+        $attendance = Attendance::findOrFail($attendance_id);
         
         $date = $attendance->date->format('Y-m-d');
 
