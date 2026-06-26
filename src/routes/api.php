@@ -23,4 +23,8 @@ Route::post('/v1/tokens', [AuthTokenController::class, 'store']);
 Route::middleware('auth:sanctum')->group(function () {
     // 勤怠登録
     Route::post('/v1/attendance-records', [AttendanceRecordController::class, 'store']);
+    // 勤怠更新
+    Route::put('/v1/attendance-records/{attendanceRecord}', [AttendanceRecordController::class, 'update']);
+    // 勤怠削除
+    Route::delete('/v1/attendance-records/{attendanceRecord}', [AttendanceRecordController::class, 'destroy']);
 });

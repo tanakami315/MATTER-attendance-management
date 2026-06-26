@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\IndexAttendanceRecordRequest;
 use App\Http\Requests\Api\V1\StoreAttendanceRecordRequest;
+use App\Http\Requests\Api\V1\UpdateAttendanceRecordRequest;
 use App\Http\Resources\AttendanceRecordResource;
 use App\Models\Attendance;
 use Carbon\Carbon;
@@ -69,5 +70,50 @@ class AttendanceRecordController extends Controller
         return (new AttendanceRecordResource($attendance))
             ->response()
             ->setStatusCode(201);
+    }
+    
+    // 勤怠更新
+    public function update(UpdateAttendanceRecordRequest $request, $attendanceRecord)
+    {
+        $attendance = Attendance::find($attendanceRecord);
+
+        if (! $attendance) {
+            return response()->json([
+                'message' => '勤怠情報が見つかりませんでした。'
+            ], 404);
+        }
+
+        $this->authorize('update', $attendance);
+
+        $attendance->update([
+            'date' => $request->date,
+            'clock_in' => Carbon::parse($request->date . ' ' . $request->clock_in),
+            'clock_out' => $request->clock_out
+                ? Carbon::parse($request->date . ' ' . $request->clock_out)
+                : null,
+            'comment' => $request->comment,
+        ]);
+
+        $attendance->load('user', 'breakTimes');
+
+        return new AttendanceRecordResource($attendance);
+    }
+
+    // 勤怠削除
+    public function destroy($attendanceRecord)
+    {
+        $attendance = Attendance::find($attendanceRecord);
+
+        if (! $attendance) {
+            return response()->json([
+                'message' => '勤怠情報が見つかりませんでした。'
+            ], 404);
+        }
+
+        $this->authorize('delete', $attendance);
+
+        $attendance->delete();
+
+        return response('', 204);
     }
 }

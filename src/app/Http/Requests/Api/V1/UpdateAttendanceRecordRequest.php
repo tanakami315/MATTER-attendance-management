@@ -4,8 +4,9 @@ namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Models\Attendance;
 
-class StoreAttendanceRecordRequest extends FormRequest
+class UpdateAttendanceRecordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +15,7 @@ class StoreAttendanceRecordRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+            return true;
     }
 
     /**
@@ -24,13 +25,20 @@ class StoreAttendanceRecordRequest extends FormRequest
      */
     public function rules()
     {
+        $attendance = Attendance::find($this->route('attendanceRecord'));
+
         return [
             'date' => [
                 'required',
                 'date_format:Y-m-d',
-                Rule::unique('attendances')->where(function ($query) {
-                    return $query->where('user_id', auth()->id());
-                }),
+                    Rule::unique('attendances', 'date')
+                        ->ignore($this->route('attendanceRecord'))
+                        ->where(function ($query) use ($attendance) {
+                            if (! $attendance) {
+                                return $query->whereRaw('1 = 0');
+                            }
+                            return $query->where('user_id', $attendance->user_id);
+                        }),
             ],
             'clock_in' => [
                 'required',
