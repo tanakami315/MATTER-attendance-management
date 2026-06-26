@@ -206,23 +206,17 @@ class StaffController extends Controller
             ->with('flashSuccess', '申請を作成しました');
     }
 
-   // 申請一覧(管理者共通)
+    // 申請一覧
     public function correctRequestList(Request $request)
     {
         $tab = $request->query('tab');
 
         $user = auth()->user();
 
-        // 管理者
-        if ($user->admin_status == 1){
-            $query = AttendanceCorrectRequest::with('attendance.user');
-        }
-        // スタッフ
-        else {$query = AttendanceCorrectRequest::with('attendance.user')
-        ->whereHas('attendance', function ($query) {
-            $query->where('user_id', auth()->id());
-        });
-        }
+        $query = AttendanceCorrectRequest::with('attendance.user')
+            ->whereHas('attendance', function ($query) {
+                $query->where('user_id', auth()->id());
+            });
 
         if ($tab === 'pending') {
             $query->where('status', 0);
@@ -231,21 +225,10 @@ class StaffController extends Controller
         }
         $attendanceCorrectRequests = $query->latest()->get();
 
-        // 管理者
-        if ($user->admin_status == 1){
-            return view(
-                'admin.admin_correct_request_list',
-                compact('attendanceCorrectRequests')
-            );
-        }
-
-        // スタッフ
-        else {
-            return view(
-                'staff.staff_correct_request_list',
-                compact('attendanceCorrectRequests')
-            );
-        }
+        return view(
+            'staff.staff_correct_request_list',
+            compact('attendanceCorrectRequests')
+        );
     }
 
     // レポート

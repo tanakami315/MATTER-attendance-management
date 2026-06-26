@@ -155,7 +155,27 @@ class AdminController extends Controller
         ));
     }
 
-    // 申請一覧 passがstaffと同一のためStaffControllerに記載
+    // 申請一覧
+    public function correctRequestList(Request $request)
+    {
+        $tab = $request->query('tab');
+
+        $user = auth()->user();
+
+        $query = AttendanceCorrectRequest::with('attendance.user');
+        
+        if ($tab === 'pending') {
+            $query->where('status', 0);
+        } elseif ($tab === 'approved') {
+            $query->where('status', 1);
+        }
+        $attendanceCorrectRequests = $query->latest()->get();
+
+        return view(
+            'admin.admin_correct_request_list',
+            compact('attendanceCorrectRequests')
+        );
+    }
 
     // 申請詳細表示
     public function adminRequestDetail($admin_correct_request_id)

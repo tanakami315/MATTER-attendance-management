@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\AdminController;
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,12 +17,17 @@ use App\Http\Controllers\AdminController;
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','admin.status'])->group(function () {
     // 申請一覧
-    Route::get('/stamp_correction_request/list', [StaffController::class, 'correctRequestList']);
+    Route::get('/stamp_correction_request/list', function (Request $request) {
+        if (auth()->user()->admin_status) {
+            return app(AdminController::class)->correctRequestList($request);
+        }
+        return app(StaffController::class)->correctRequestList($request);
+    });
 });
 
-Route::middleware(['auth', 'can:staff'])->group(function () {
+Route::middleware('auth')->group(function () {
     // 勤怠登録画面
     Route::get('/attendance', [StaffController::class, 'stamp']);
     Route::get('/redirect-after-login', function () {

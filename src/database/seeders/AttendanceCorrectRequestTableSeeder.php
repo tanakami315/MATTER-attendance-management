@@ -18,6 +18,23 @@ class AttendanceCorrectRequestTableSeeder extends Seeder
      */
     public function run()
     {
+        // 勤怠ID80
+        $attendance = Attendance::findOrFail(80);
+
+        $request = AttendanceCorrectRequest::create([
+            'attendance_id' => $attendance->id,
+            'clock_in' => Carbon::parse($attendance->date->format('Y-m-d') . ' 08:00'),
+            'clock_out' => Carbon::parse($attendance->date->format('Y-m-d') . ' 18:00'),
+            'comment' => '打刻忘れのため',
+            'status' => 0,
+        ]);
+
+        BreakCorrectRequest::create([
+            'attendance_correct_request_id' => $request->id,
+            'start_break' => Carbon::parse($attendance->date->format('Y-m-d') . ' 12:30'),
+            'end_break' => Carbon::parse($attendance->date->format('Y-m-d') . ' 13:30'),
+        ]);
+
         // 勤怠ID150
         $attendance = Attendance::findOrFail(150);
 
