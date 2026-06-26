@@ -138,13 +138,8 @@ class StaffController extends Controller
     // 勤怠詳細表示
     public function detail($id)
     {
-        $attendance = Attendance::with([
-            'user',
-            'breakTimes',
-            'attendanceCorrectRequests.breakCorrectRequests',
-        ])->findOrFail($id);
-
-        $breakTimes = $attendance->breakTimes;
+        $attendance = Attendance::with('user','breakTimes')
+            ->findOrFail($id);
 
         $breakTimes = $attendance->breakTimes;
 
@@ -154,14 +149,18 @@ class StaffController extends Controller
             )
             ->latest()
             ->first();
-
-         $attendanceCorrectRequest = $attendance-> attendanceCorrectRequests
-            ->sortByDesc('created_at')
-            ->first();
         
-        $breakCorrectRequests = $attendanceCorrectRequest
-            ? $attendanceCorrectRequest->breakCorrectRequests
-            : collect();
+        $breakCorrectRequests = null;
+
+        if ($attendanceCorrectRequest) {
+            $breakCorrectRequests = BreakCorrectRequest::where(
+                'attendance_correct_request_id',
+                $attendanceCorrectRequest->id
+                )
+                ->latest()
+                ->get();
+
+        }
 
         return view(
             'staff.staff_detail',
