@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V1\AttendanceRecordController;
+use App\Http\Controllers\Api\V1\AuthTokenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,7 +14,17 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// 勤怠一覧の取得
+Route::get('/v1/attendance-records', [AttendanceRecordController::class, 'index']);
+// 勤怠詳細の取得
+Route::get('/v1/attendance-records/{attendanceRecord}', [AttendanceRecordController::class, 'show']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/v1/tokens', [AuthTokenController::class, 'store']);
+Route::middleware('auth:sanctum')->group(function () {
+    // 勤怠登録
+    Route::post('/v1/attendance-records', [AttendanceRecordController::class, 'store']);
+    // 勤怠更新
+    Route::put('/v1/attendance-records/{attendanceRecord}', [AttendanceRecordController::class, 'update']);
+    // 勤怠削除
+    Route::delete('/v1/attendance-records/{attendanceRecord}', [AttendanceRecordController::class, 'destroy']);
 });

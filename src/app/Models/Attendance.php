@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\BreakTime;
+use App\Models\AttendanceCorrectRequest;
 
 class Attendance extends Model
 {
@@ -31,6 +32,11 @@ class Attendance extends Model
     public function breakTimes()
     {
         return $this->hasMany(BreakTime::class);
+    }
+
+    public function attendanceCorrectRequests()
+    {
+        return $this->hasMany(AttendanceCorrectRequest::class);
     }
 
     // 休憩時間計算(分)
