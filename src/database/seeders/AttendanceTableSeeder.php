@@ -10,7 +10,12 @@ use Carbon\Carbon;
 
 class AttendanceTableSeeder extends Seeder
 {
-    private function isHoliday(Carbon $date): bool
+    /**
+     * Determine whether the given date is a holiday.
+     * @param Carbon $date
+     * @return bool
+     */
+    private function isHoliday(Carbon $date)
     {
         // 土日
         if ($date->isWeekend()) {
@@ -57,7 +62,12 @@ class AttendanceTableSeeder extends Seeder
 
         return in_array($date->format('Y-m-d'), $holidays, true);
     }
-
+    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
     public function run()
     {
         $user1 = User::where('email', 'user1@example.com')->firstOrFail();
@@ -201,7 +211,18 @@ class AttendanceTableSeeder extends Seeder
         ]);
 
     }
-
+    
+    /**
+    * Create an attendance record with an optional break time.
+     *
+     * @param User $user
+     * @param Carbon $date
+     * @param string $clockIn
+     * @param string $clockOut
+     * @param string|null $breakStart
+     * @param string|null $breakEnd
+     * @return Attendance
+     */
     private function createAttendance(
             $user,
             Carbon $date,

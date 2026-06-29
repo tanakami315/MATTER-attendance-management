@@ -53,10 +53,15 @@ class AttendanceRequest extends FormRequest
             'comment' =>[
                 'required',
                 'max:255',
-            ]
+            ],
         ];
     }
 
+    /**
+     * Get the error messages.
+     *
+     * @return array
+     */
     public function messages()
     {
         return [
@@ -74,10 +79,16 @@ class AttendanceRequest extends FormRequest
             'start_break.*.before' => '休憩時間が不適切な値です',
             'end_break.*.before' => '休憩時間もしくは退勤時間が不適切な値です',
 
-            'comment.max' => '備考は255文字以内で入力してください'
+            'comment.max' => '備考は255文字以内で入力してください',
         ];
     }
 
+    /**
+     * Configure the validator instance.
+     *
+     * @param \Illuminate\Validation\Validator $validator
+     * @return void
+     */
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {

@@ -43,6 +43,11 @@ class RegisterRequest extends FormRequest
         ];
     }
 
+    /**
+     * Get the error messages.
+     *
+     * @return array
+     */
     public function messages()
     {
         return [

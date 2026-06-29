@@ -9,9 +9,16 @@ use App\Models\Attendance;
 use App\Models\BreakTime;
 use App\Models\AttendanceCorrectRequest;
 use App\Models\BreakCorrectRequest;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class StaffController extends Controller
 {
+    /**
+     * Show the attendance register view for staff.
+     *
+     * @return View
+     */
     public function stamp()
     {
         $attendance = Attendance::with('breakTimes')
@@ -48,8 +55,12 @@ class StaffController extends Controller
         return view('staff.staff_stamp', compact('attendance', 'status'));
     }
     
-    // 勤務開始
-    public function start_work(Request $request)
+    /**
+     * Register the start of work for staff.
+     *
+     * @return RedirectResponse
+     */
+    public function start_work()
     {
         $attendance['user_id'] = auth()->id();
         $attendance['date'] = date('Y-m-d');
@@ -59,8 +70,12 @@ class StaffController extends Controller
         return redirect('/attendance');
     }
 
-    // 勤務終了
-    public function end_work(Request $request)
+    /**
+     * Register the end of work for staff.
+     *
+     * @return RedirectResponse
+     */
+    public function end_work()
     {
         $attendance['clock_out'] = now();
         Attendance::where('user_id', auth()->id())
@@ -69,8 +84,12 @@ class StaffController extends Controller
         return redirect('/attendance');
     }
 
-    // 休憩開始
-    public function start_break(Request $request)
+    /**
+     * Register the start of break for staff.
+     *
+     * @return RedirectResponse
+     */
+    public function start_break()
     {
         $attendance = Attendance::where('user_id', auth()->id())
             ->whereDate('date', today())
@@ -83,8 +102,12 @@ class StaffController extends Controller
         return redirect('/attendance');
     }
 
-    // 休憩終了
-    public function end_break(Request $request)
+    /**
+     * Register the end of break for staff.
+     *
+     * @return RedirectResponse
+     */
+    public function end_break()
     {
         $attendance = Attendance::where('user_id', auth()->id())
             ->whereDate('date', today())
@@ -99,7 +122,12 @@ class StaffController extends Controller
         return redirect('/attendance');
     }
 
-    // 勤怠一覧
+    /**
+     * Show the monthly attendance record for staff.
+     *
+     * @param Request $request
+     * @return View
+     */
     public function monthlyList(Request $request)
     {
         $month = Carbon::parse(
@@ -135,7 +163,12 @@ class StaffController extends Controller
         ));
     }
 
-    // 勤怠詳細表示
+    /**
+     * Show the detail of the attendance record for staff.
+     *
+     * @param int $id
+     * @return View
+     */
     public function detail($id)
     {
         $attendance = Attendance::with('user','breakTimes')
@@ -173,7 +206,13 @@ class StaffController extends Controller
         );
     }
 
-    // 申請作成
+    /**
+     * Create the correct request for staff.
+     *
+     * @param AttendanceRequest $request
+     * @param int $attendance_id
+     * @return RedirectResponse
+     */
     public function store(AttendanceRequest $request, $attendance_id)
     {
         $attendance = Attendance::findOrFail($attendance_id);
@@ -206,7 +245,12 @@ class StaffController extends Controller
             ->with('flashSuccess', '申請を作成しました');
     }
 
-    // 申請一覧
+    /**
+     * Show the correct requests list for staff.
+     *
+     * @param Request $request
+     * @return View
+     */
     public function correctRequestList(Request $request)
     {
         $tab = $request->query('tab');
@@ -231,7 +275,11 @@ class StaffController extends Controller
         );
     }
 
-    // レポート
+    /**
+     * Show the attendance report for staff.
+     *
+     * @return View
+     */
     public function report()
     {
         // 6か月分の空データ作成

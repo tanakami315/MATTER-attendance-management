@@ -14,17 +14,19 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// 勤怠一覧の取得
-Route::get('/v1/attendance-records', [AttendanceRecordController::class, 'index']);
-// 勤怠詳細の取得
-Route::get('/v1/attendance-records/{attendanceRecord}', [AttendanceRecordController::class, 'show']);
+
+Route::apiResource('v1/attendance-records', AttendanceRecordController::class)
+    ->parameters([
+        'attendance-records' => 'attendanceRecord',
+    ])
+    ->only(['index', 'show']);
 
 Route::post('/v1/tokens', [AuthTokenController::class, 'store']);
+
 Route::middleware('auth:sanctum')->group(function () {
-    // 勤怠登録
-    Route::post('/v1/attendance-records', [AttendanceRecordController::class, 'store']);
-    // 勤怠更新
-    Route::put('/v1/attendance-records/{attendanceRecord}', [AttendanceRecordController::class, 'update']);
-    // 勤怠削除
-    Route::delete('/v1/attendance-records/{attendanceRecord}', [AttendanceRecordController::class, 'destroy']);
+    Route::apiResource('v1/attendance-records', AttendanceRecordController::class)
+        ->parameters([
+            'attendance-records' => 'attendanceRecord',
+        ])
+        ->only(['store', 'update', 'destroy']);
 });
