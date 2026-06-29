@@ -30,7 +30,7 @@ class AdminController extends Controller
         
             return redirect('/admin/login');
         }
-        return view('admin.admin_login');
+        return view('auth.admin_login');
     }
 
     /**
@@ -277,10 +277,11 @@ class AdminController extends Controller
     /**
      * Export the personal monthly attendance record to csv for admin.
      *
+     * @param int $user_id
      * @param Request $request
      * @return StreamedResponse
      */
-    public function export($user_id, Request $request)
+    public function export(int $user_id, Request $request): StreamedResponse
     {
         $month = Carbon::parse($request->month ?? now()->format('Y-m'));
 

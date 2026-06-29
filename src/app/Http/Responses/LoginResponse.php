@@ -20,6 +20,6 @@ class LoginResponse implements LoginResponseContract
             return redirect('/admin/attendance/list');
         }
         
-        return redirect('/attendance');
+        return redirect('/redirect-after-login');
     }
 }

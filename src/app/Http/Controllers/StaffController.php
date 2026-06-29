@@ -280,7 +280,7 @@ class StaffController extends Controller
      *
      * @return View
      */
-    public function report()
+    public function report(): View
     {
         // 6か月分の空データ作成
         $baseMonthlyTotals = collect(range(5, 0))->mapWithKeys(function ($i) {

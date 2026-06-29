@@ -9,12 +9,21 @@ use App\Http\Requests\Api\V1\UpdateAttendanceRecordRequest;
 use App\Http\Resources\AttendanceRecordResource;
 use App\Models\Attendance;
 use Carbon\Carbon;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AttendanceRecordController extends Controller
 {
-    // 勤怠一覧を取得
-    public function index(IndexAttendanceRecordRequest $request)
-    {
+    /**
+     * Show the daily attendance record for API.
+     *
+     * @param IndexAttendanceRecordRequest $request
+     * @return AnonymousResourceCollection
+     */
+    public function index(
+        IndexAttendanceRecordRequest $request
+    ): AnonymousResourceCollection {
         $perPage = min((int) $request->query('per_page', 20), 100);
 
         $query = Attendance::with('user', 'breakTimes')
@@ -40,9 +49,15 @@ class AttendanceRecordController extends Controller
         return AttendanceRecordResource::collection($attendanceRecords);
     }
 
-    // 勤怠詳細を取得
-    public function show(Attendance $attendanceRecord)
-    {
+    /**
+     * Show the detail of the attendance record for API.
+     *
+     * @param Attendance $attendanceRecord
+     * @return AttendanceRecordResource
+     */
+    public function show(
+        Attendance $attendanceRecord
+    ): AttendanceRecordResource {
         $attendanceRecord->load(
             'user',
             'breakTimes',
@@ -52,9 +67,15 @@ class AttendanceRecordController extends Controller
         return new AttendanceRecordResource($attendanceRecord);
     }
     
-    // 勤怠登録
-    public function store(StoreAttendanceRecordRequest $request)
-    {
+    /**
+     * Create the attendance record for API.
+     *
+     * @param StoreAttendanceRecordRequest $request
+     * @return JsonResponse
+     */
+    public function store(
+        StoreAttendanceRecordRequest $request
+    ): JsonResponse {
         $attendance = Attendance::create([
             'user_id' => auth()->id(),
             'date' => $request->date,
@@ -72,9 +93,17 @@ class AttendanceRecordController extends Controller
             ->setStatusCode(201);
     }
     
-    // 勤怠更新
-    public function update(UpdateAttendanceRecordRequest $request, $attendanceRecord)
-    {
+    /**
+     * Update the attendance record for API.
+     *
+     * @param UpdateAttendanceRecordRequest $request
+     * @param int $attendanceRecord
+     * @return AttendanceRecordResource|JsonResponse
+     */
+    public function update(
+        UpdateAttendanceRecordRequest $request,
+        int $attendanceRecord
+    ): AttendanceRecordResource|JsonResponse {
         $attendance = Attendance::find($attendanceRecord);
 
         if (! $attendance) {
@@ -99,9 +128,15 @@ class AttendanceRecordController extends Controller
         return new AttendanceRecordResource($attendance);
     }
 
-    // 勤怠削除
-    public function destroy($attendanceRecord)
-    {
+    /**
+     * Delete the attendance record for API.
+     *
+     * @param int $attendanceRecord
+     * @return JsonResponse|Response
+     */
+    public function destroy(
+        int $attendanceRecord
+    ): JsonResponse|Response {
         $attendance = Attendance::find($attendanceRecord);
 
         if (! $attendance) {
