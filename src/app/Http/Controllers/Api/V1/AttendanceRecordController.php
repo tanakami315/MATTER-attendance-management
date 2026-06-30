@@ -26,7 +26,7 @@ class AttendanceRecordController extends Controller
     ): AnonymousResourceCollection {
         $perPage = min((int) $request->query('per_page', 20), 100);
 
-        $query = Attendance::with('user', 'breakTimes')
+        $query = Attendance::with('user')
             ->when($request->filled('user_id'), function ($query) use ($request) {
                 $query->where('user_id', $request->user_id);
             })
@@ -52,19 +52,25 @@ class AttendanceRecordController extends Controller
     /**
      * Show the detail of the attendance record for API.
      *
-     * @param Attendance $attendanceRecord
+     * @param int $attendanceRecord
      * @return AttendanceRecordResource
      */
     public function show(
-        Attendance $attendanceRecord
-    ): AttendanceRecordResource {
-        $attendanceRecord->load(
+        int $attendanceRecord
+    ): AttendanceRecordResource|JsonResponse {
+        $attendance = Attendance::with(
             'user',
             'breakTimes',
             'attendanceCorrectRequests.breakCorrectRequests'
-        );
+        )->find($attendanceRecord);
 
-        return new AttendanceRecordResource($attendanceRecord);
+        if (! $attendance) {
+            return response()->json([
+                'message' => '勤怠情報が見つかりませんでした。'
+            ], 404);
+        }
+
+        return new AttendanceRecordResource($attendance);
     }
 
     /**

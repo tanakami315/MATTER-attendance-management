@@ -13,33 +13,26 @@ class AttendanceRecordResource extends JsonResource
      * @param Request $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
-            'user_name' => $this->user->name,
-            'date' => $this->date->format('Y-m-d'),
+            'user' => new UserResource($this->whenLoaded('user')),
+            'date' => $this->date?->format('Y-m-d'),
             'clock_in' => $this->clock_in?->format('H:i'),
             'clock_out' => $this->clock_out?->format('H:i'),
-            'break_time' => $this->break_time,
             'work_time' => $this->work_time,
+            'break_time' => $this->break_time,
+            'comment' => $this->comment,
 
-            'correction_requests' => $this->attendanceCorrectRequests->map(function ($request) {
-                return [
-                    'id' => $request->id,
-                    'clock_in' => $request->clock_in?->format('H:i'),
-                    'clock_out' => $request->clock_out?->format('H:i'),
-                    'comment' => $request->comment,
-                    'status' => $request->status,
-                    'breaks' => $request->breakCorrectRequests->map(function ($break) {
-                        return [
-                            'start_break' => $break->start_break?->format('H:i'),
-                            'end_break' => $break->end_break?->format('H:i'),
-                        ];
-                    }),
-                ];
-            }),
+            'breakTimes' => BreakTimeResource::collection(
+                $this->whenLoaded('breakTimes')
+            ),
+
+            'attendanceCorrectRequests' => AttendanceCorrectRequestResource::collection(
+                $this->whenLoaded('attendanceCorrectRequests')
+            ),
         ];
     }
 }
