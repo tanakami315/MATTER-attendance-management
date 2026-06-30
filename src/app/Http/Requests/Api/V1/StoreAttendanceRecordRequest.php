@@ -12,7 +12,7 @@ class StoreAttendanceRecordRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -22,7 +22,7 @@ class StoreAttendanceRecordRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'date' => [
@@ -48,7 +48,12 @@ class StoreAttendanceRecordRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    /**
+     * Get the error messages.
+     *
+     * @return array
+     */
+    public function messages(): array
     {
         return [
             'date.required' => '必須未入力：勤怠日は必須です。',
@@ -58,7 +63,7 @@ class StoreAttendanceRecordRequest extends FormRequest
             'clock_in.date_format' => '形式不正：出勤時刻は HH:MM:SS 形式で指定してください。',
             'clock_out.date_format' => '形式不正：退勤時刻は HH:MM:SS 形式で指定してください。',
             'clock_out.after' => 'clock_inより前：退勤時刻は出勤時刻より後の時刻を指定してください。',
-            'comment.max' => '255文字超：備考は255文字以内で入力してください'
+            'comment.max' => '255文字超：備考は255文字以内で入力してください。',
         ];
     }
 }

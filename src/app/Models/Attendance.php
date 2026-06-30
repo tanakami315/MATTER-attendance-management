@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Attendance extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'date',
@@ -23,13 +24,13 @@ class Attendance extends Model
         'clock_in' => 'datetime',
         'clock_out' => 'datetime',
     ];
-    
+
     /**
      * Get the user who owns the attendance.
      *
      * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -39,7 +40,7 @@ class Attendance extends Model
      *
      * @return HasMany
      */
-    public function breakTimes()
+    public function breakTimes(): HasMany
     {
         return $this->hasMany(BreakTime::class);
     }
@@ -49,7 +50,7 @@ class Attendance extends Model
      *
      * @return HasMany
      */
-    public function attendanceCorrectRequests()
+    public function attendanceCorrectRequests(): HasMany
     {
         return $this->hasMany(AttendanceCorrectRequest::class);
     }
@@ -59,7 +60,7 @@ class Attendance extends Model
      *
      * @return int
      */
-    public function getBreakMinutesAttribute()
+    public function getBreakMinutesAttribute(): int
     {
         return $this->breakTimes()->get()->sum(function ($breakTime) {
             if (!$breakTime->start_break || !$breakTime->end_break) {
@@ -75,7 +76,7 @@ class Attendance extends Model
      *
      * @return int
      */
-    public function getWorkMinutesAttribute()
+    public function getWorkMinutesAttribute(): int
     {
         if (!$this->clock_in || !$this->clock_out) {
             return 0;
@@ -90,7 +91,7 @@ class Attendance extends Model
      *
      * @return string
      */
-    public function getBreakTimeAttribute()
+    public function getBreakTimeAttribute(): string
     {
         $minutes = $this->break_minutes;
 
@@ -106,7 +107,7 @@ class Attendance extends Model
      *
      * @return string
      */
-    public function getWorkTimeAttribute()
+    public function getWorkTimeAttribute(): string
     {
         $minutes = $this->work_minutes;
 

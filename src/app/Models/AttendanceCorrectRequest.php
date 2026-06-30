@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class AttendanceCorrectRequest extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'attendance_id',
         'clock_in',
@@ -29,17 +29,17 @@ class AttendanceCorrectRequest extends Model
      *
      * @return BelongsTo
      */
-    public function attendance()
+    public function attendance(): BelongsTo
     {
         return $this->belongsTo(Attendance::class);
     }
 
-     /**
+    /**
      * Get the break correction requests for the attendance correction request.
      *
      * @return HasMany
      */
-    public function breakCorrectRequests()
+    public function breakCorrectRequests(): HasMany
     {
         return $this->hasMany(BreakCorrectRequest::class);
     }

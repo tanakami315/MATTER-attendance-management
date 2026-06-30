@@ -1,12 +1,9 @@
 @extends('layouts.admin_app')
 
 @section('css')
-	<!-- 背景色、card、titleを記載 -->
-	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<!-- date-navigation以下を記載 -->
+    <link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/date-navigation.css') }}">
-	<!-- list-table以下を記載 -->
-	<link rel="stylesheet" href="{{ asset('css/list.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
 
 @section('content')
@@ -72,7 +69,7 @@
                     </td>
                     <td class="list-table__center-align-text">
                         {{ $attendance?->work_time }}
-                    </td>   
+                    </td>
                     <td class="list-table__center-align-text">
                         <a
                             class="list-table__link"

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthTokenController extends Controller
 {
-      /**
+    /**
      * Create the token.
      *
      * @param Request $request

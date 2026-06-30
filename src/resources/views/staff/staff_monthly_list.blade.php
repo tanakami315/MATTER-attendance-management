@@ -48,7 +48,7 @@
     @php
         $week = ['日', '月', '火', '水', '木', '金', '土'];
     @endphp
-    
+
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__header">
@@ -64,7 +64,7 @@
                 @php
                     $attendance = $attendances->get($date->format('Y-m-d'));
                 @endphp
-                
+
                 <tr class="list-table__row">
                     <td class="list-table__left-align-text list-table__wide-text">
                         {{ $date->format('m/d') }}（{{ $week[$date->dayOfWeek] }}）
@@ -80,7 +80,7 @@
                     </td>
                     <td class="list-table__center-align-text">
                         {{ $attendance?->work_time }}
-                    </td>   
+                    </td>
                     <td class="list-table__center-align-text">
                         @if ($attendance)
                             <a
@@ -89,7 +89,6 @@
                             >
                                 詳細
                             </a>
-                        @else
                         @endif
                     </td>
                 </tr>

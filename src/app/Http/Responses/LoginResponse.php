@@ -19,7 +19,7 @@ class LoginResponse implements LoginResponseContract
         if (auth()->user()->admin_status == 1) {
             return redirect('/admin/attendance/list');
         }
-        
+
         return redirect('/redirect-after-login');
     }
 }

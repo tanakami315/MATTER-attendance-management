@@ -14,7 +14,6 @@
     <h1 class="title">
         申請一覧
     </h1>
-    
     <nav class="status-label">
         <div class="status-label__inner">
             <a
@@ -31,7 +30,7 @@
             </a>
         </div>
     </nav>
-    
+
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__header">
@@ -49,8 +48,6 @@
                             承認待ち
                         @elseif ($attendanceCorrectRequest->status == 1)
                             承認済み
-                        @else
-                            差戻
                         @endif
                     </td>
                     <td class="list-table__left-align-text">

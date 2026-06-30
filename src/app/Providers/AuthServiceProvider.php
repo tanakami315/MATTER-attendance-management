@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Attendance;
+use App\Policies\AttendanceRecordPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use App\Policies\AttendanceRecordPolicy;
-use App\Models\Attendance;
 
 class AuthServiceProvider extends ServiceProvider
 {

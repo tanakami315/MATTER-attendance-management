@@ -1,7 +1,3 @@
-@php
-use Illuminate\Support\Str;
-@endphp
-
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -9,9 +5,7 @@ use Illuminate\Support\Str;
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>coachtech勤怠管理アプリ</title>
-    <script src="https://kit.fontawesome.com/42694f25bf.js" crossorigin="anonymous"></script>
-    <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
+    <title>coachtech勤怠管理アプリ（管理者用）</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
@@ -21,9 +15,9 @@ use Illuminate\Support\Str;
 <body>
     <header class="header">
         <div class="header__inner">
-            <a class="header__logo">
+            <div class="header__logo">
                 <img src="{{ asset('image/COACHTECH.png') }}" alt="COACHTECH">
-            </a>
+            </div>
             <nav class="header__nav">
                 <a
                     href="/admin/attendance/list"
@@ -46,9 +40,7 @@ use Illuminate\Support\Str;
                 >
                     申請一覧
                 </a>
-                <form action="/logout"
-                    method="post"
-                >
+                <form action="/logout" method="post">
                     @csrf
                     <input type="hidden" name="login_type" value="admin">
                     <button
@@ -62,7 +54,7 @@ use Illuminate\Support\Str;
             </nav>
         </div>
     </header>
-    
+
     <main>
         @yield('content')
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -79,7 +71,7 @@ use Illuminate\Support\Str;
             toastr.success("{{ session('flashSuccess') }}");
             @endif
         </script>
-            @yield('js')
+        @yield('js')
     </main>
 
 </body>

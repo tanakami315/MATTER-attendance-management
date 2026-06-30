@@ -11,7 +11,7 @@ class LoginRequest extends FortifyLoginRequest
      *
      * @return bool
      */
-    public function authorize():bool
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,7 +21,7 @@ class LoginRequest extends FortifyLoginRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'email' => [
@@ -40,7 +40,7 @@ class LoginRequest extends FortifyLoginRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
             'email.required' => 'メールアドレスを入力してください',

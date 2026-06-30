@@ -67,13 +67,13 @@
     text-align: left;
 }
 
-.request-action {
+.detail-table__action {
     display: flex;
     justify-content: flex-end;
     margin-top: 20px;
 }
 
-.request-message {
+.detail-table__message {
     font-size:18px;
     font-weight: 800;
     color: #FF0000;
@@ -81,7 +81,7 @@
     letter-spacing: 0.15em;
 }
 
-.request-button {
+.detail-table__button {
     width: 130px;
     height: 50px;
     font-size:22px;
@@ -91,7 +91,7 @@
     background-color:#000000;
 }
 
-.detail-input-form__error{
+.detail-table__error{
     padding-left: 20px;
     font-size:16px;
     color: #FF0000;

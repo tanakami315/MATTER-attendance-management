@@ -66,7 +66,7 @@ class AttendanceRecordController extends Controller
 
         return new AttendanceRecordResource($attendanceRecord);
     }
-    
+
     /**
      * Create the attendance record for API.
      *
@@ -92,7 +92,7 @@ class AttendanceRecordController extends Controller
             ->response()
             ->setStatusCode(201);
     }
-    
+
     /**
      * Update the attendance record for API.
      *

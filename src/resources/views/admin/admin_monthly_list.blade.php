@@ -1,12 +1,9 @@
 @extends('layouts.admin_app')
 
 @section('css')
-    <!-- 背景色、card、titleを記載 -->
 	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<!-- date-navigation以下を記載 -->
     <link rel="stylesheet" href="{{ asset('css/date-navigation.css') }}">
-	<!-- list-table以下を記載 -->
-	<link rel="stylesheet" href="{{ asset('css/list.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
 
 @section('content')
@@ -48,7 +45,7 @@
     @php
         $week = ['日', '月', '火', '水', '木', '金', '土'];
     @endphp
-    
+
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__header">
@@ -64,7 +61,7 @@
                 @php
                     $attendance = $attendances->get($date->format('Y-m-d'));
                 @endphp
-                
+
                 <tr class="list-table__row">
                     <td class="list-table__left-align-text list-table__wide-text">
                         {{ $date->format('m/d') }}（{{ $week[$date->dayOfWeek] }}）
@@ -83,25 +80,25 @@
                     </td>
                     <td class="list-table__center-align-text">
                         @if ($attendance)
-                        <a
-                            class="list-table__link"
-                            href="{{ url('/admin/attendance/' . $attendance->id) }}"
-                        >
-                            詳細
-                        </a>
-                        @else
+                            <a
+                                class="list-table__link"
+                                href="{{ url('/admin/attendance/' . $attendance->id) }}"
+                            >
+                                詳細
+                            </a>
                         @endif
                     </td>
                 </tr>
             @endforeach
         </table>
     </div>
-    <div class="request-action">
+    <div class="list-table__action">
         <form
             action="{{ url('/admin/attendance/staff/' . $user->id . '/export?month=' . $month->format('Y-m')) }}"
-            method="post">
+            method="post"
+            >
             @csrf
-            <input class="export-button" type="submit" value="CSV出力">
+            <input class="list-table__button" type="submit" value="CSV出力">
         </form>
     </div>
 </div>

@@ -18,5 +18,4 @@ class AdminStatusMiddleware
     {
         return $next($request);
     }
-
 }

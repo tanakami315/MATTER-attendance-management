@@ -19,7 +19,7 @@
         @method('POST')
         <div class="detail-table">
             <table class="detail-table__inner">
-                <tr class="detail-table__row">   
+                <tr class="detail-table__row">
                     <th class="detail-table__label">名前</th>
                     <td class="detail-table__content">
                         {{ $attendance->user->name }}
@@ -94,30 +94,30 @@
                     @endforeach
                 @else
                     @foreach($breakTimes as $index => $breakTime)
-                    <tr class="detail-table__row">
-                        <th class="detail-table__label">
-                            休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
-                        </th>
-                        <td class="detail-table__content">
-                            <input
-                                class="detail-table__input"
-                                type="text"
-                                name="start_break[]"
-                                value="{{ old('start_break.' . $index, $breakTime?->start_break?->format('H:i')) }}"
-                            >
-                        </td>
-                        <td class="detail-table__content--mark">
-                            ～
-                        </td>
-                        <td class="detail-table__content">
-                            <input
-                                class="detail-table__input"
-                                type="text"
-                                name="end_break[]"
-                                value="{{ old('end_break.' . $index, $breakTime?->end_break?->format('H:i')) }}"
-                            >
-                        </td>
-                    </tr>
+                        <tr class="detail-table__row">
+                            <th class="detail-table__label">
+                                休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
+                            </th>
+                            <td class="detail-table__content">
+                                <input
+                                    class="detail-table__input"
+                                    type="text"
+                                    name="start_break[]"
+                                    value="{{ old('start_break.' . $index, $breakTime?->start_break?->format('H:i')) }}"
+                                >
+                            </td>
+                            <td class="detail-table__content--mark">
+                                ～
+                            </td>
+                            <td class="detail-table__content">
+                                <input
+                                    class="detail-table__input"
+                                    type="text"
+                                    name="end_break[]"
+                                    value="{{ old('end_break.' . $index, $breakTime?->end_break?->format('H:i')) }}"
+                                >
+                            </td>
+                        </tr>
                     @endforeach
 
                     <tr class="detail-table__row">
@@ -154,27 +154,27 @@
                         @if ($isPending)
                             <p>{{ $attendanceCorrectRequest->comment }}</p>
                         @else
-                        <textarea
-                            class="detail-table__textarea"
-                            name="comment"
-                        >{{ old('comment', $attendance->comment) }}</textarea>
+                            <textarea
+                                class="detail-table__textarea"
+                                name="comment"
+                            >{{ old('comment', $attendance->comment) }}</textarea>
                         @endif
                     </td>
                 </tr>
             </table>
         </div>
         @if ($errors->any())
-            <div class="detail-input-form__error">
+            <div class="detail-table__error">
                 @foreach (array_unique($errors->all()) as $error)
                     <p>{{ $error }}</p>
                 @endforeach
             </div>
         @endif
-        <div class="request-action">
+        <div class="detail-table__action">
             @if ($isPending)
-                <span class="request-message">*承認待ちのため修正はできません。</span>
+                <span class="detail-table__message">*承認待ちのため修正はできません。</span>
             @else
-                <button class="request-button" type="submit">修正</button>
+                <button class="detail-table__button" type="submit">修正</button>
             @endif
         </div>
     </form>
