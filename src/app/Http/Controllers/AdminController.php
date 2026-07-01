@@ -198,7 +198,7 @@ class AdminController extends Controller
      * @param Request $request
      * @return View
      */
-    public function correctRequestList(
+    public function adminCorrectRequestList(
         Request $request
     ): View {
         $tab = $request->query('tab');

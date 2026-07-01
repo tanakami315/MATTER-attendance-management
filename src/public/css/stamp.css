@@ -46,17 +46,17 @@
 }
 
 .attendance-form__button--attendance {
-    color: #FFFFFF; 
+    color: #FFFFFF;
     background-color: #000000;
 }
 
 .attendance-form__button--break {
-    color: #000000; 
+    color: #000000;
     background-color: #FFFFFF;
 }
 
 .attendance-form__comment {
-    margin-top: 50px;
+    margin-top: 80px;
     font-size: 26px;
     color: #000000;
     font-weight: bold;

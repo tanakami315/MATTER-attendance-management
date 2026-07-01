@@ -13,7 +13,7 @@
 			<div class="attendance-form__date" id="current-date"></div>
 			<div class="attendance-form__time" id="current-time"></div>
 			<form
-				action="/start-work"
+				action="/start_work"
 				method="POST"
 			>
 				@csrf
@@ -27,12 +27,12 @@
 
 		<!-- 勤務中 -->
 		@elseif($status === 'working')
-			<div class="attendance-form__status">勤務中</div>
+			<div class="attendance-form__status">出勤中</div>
 			<div class="attendance-form__date" id="current-date"></div>
 			<div class="attendance-form__time" id="current-time"></div>
 			<div class="attendance-form__button">
 				<form
-					action="/end-work"
+					action="/end_work"
 					method="POST"
 				>
 					@csrf
@@ -44,7 +44,7 @@
 					</button>
 				</form>
 				<form
-					action="/start-break"
+					action="/start_break"
 					method="POST"
 				>
 					@csrf
@@ -63,7 +63,7 @@
 			<div class="attendance-form__date" id="current-date"></div>
 			<div class="attendance-form__time" id="current-time"></div>
 			<form
-				action="/end-break"
+				action="/end_break"
 				method="POST"
 			>
 				@csrf
@@ -77,7 +77,7 @@
 
 		<!-- 勤務後 -->
 		@elseif($status === 'after_work')
-			<div class="attendance-form__status">勤務外</div>
+			<div class="attendance-form__status">退勤済</div>
 			<div class="attendance-form__date" id="current-date"></div>
 			<div class="attendance-form__time" id="current-time"></div>
 			<div class="attendance-form__comment">

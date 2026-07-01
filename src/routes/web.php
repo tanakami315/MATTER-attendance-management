@@ -21,7 +21,7 @@ Route::middleware(['auth','admin.status'])->group(function () {
     // 申請一覧
     Route::get('/stamp_correction_request/list', function (Request $request) {
         if (auth()->user()->admin_status) {
-            return app(AdminController::class)->correctRequestList($request);
+            return app(AdminController::class)->adminCorrectRequestList($request);
         }
         return app(StaffController::class)->correctRequestList($request);
     });
@@ -36,10 +36,10 @@ Route::middleware('auth')->group(function () {
         }
         return redirect()->intended('/attendance');
     });
-    Route::post('/start-work', [StaffController::class, 'start_work']);
-    Route::post('/end-work', [StaffController::class, 'end_work']);
-    Route::post('/start-break', [StaffController::class, 'start_break']);
-    Route::post('/end-break', [StaffController::class, 'end_break']);
+    Route::post('/start_work', [StaffController::class, 'start_work']);
+    Route::post('/end_work', [StaffController::class, 'end_work']);
+    Route::post('/start_break', [StaffController::class, 'start_break']);
+    Route::post('/end_break', [StaffController::class, 'end_break']);
     // 勤怠一覧画面
     Route::get('/attendance/list', [StaffController::class, 'monthlyList']);
     // 勤怠詳細画面

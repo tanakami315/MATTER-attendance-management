@@ -62,13 +62,7 @@ class AttendanceRecordController extends Controller
             'user',
             'breakTimes',
             'attendanceCorrectRequests.breakCorrectRequests'
-        )->find($attendanceRecord);
-
-        if (! $attendance) {
-            return response()->json([
-                'message' => '勤怠情報が見つかりませんでした。'
-            ], 404);
-        }
+        )->findOrFail($attendanceRecord);
 
         return new AttendanceRecordResource($attendance);
     }
@@ -110,13 +104,7 @@ class AttendanceRecordController extends Controller
         UpdateAttendanceRecordRequest $request,
         int $attendanceRecord
     ): AttendanceRecordResource|JsonResponse {
-        $attendance = Attendance::find($attendanceRecord);
-
-        if (! $attendance) {
-            return response()->json([
-                'message' => '勤怠情報が見つかりませんでした。'
-            ], 404);
-        }
+        $attendance = Attendance::findOrFail($attendanceRecord);
 
         $this->authorize('update', $attendance);
 
@@ -143,13 +131,7 @@ class AttendanceRecordController extends Controller
     public function destroy(
         int $attendanceRecord
     ): JsonResponse|Response {
-        $attendance = Attendance::find($attendanceRecord);
-
-        if (! $attendance) {
-            return response()->json([
-                'message' => '勤怠情報が見つかりませんでした。'
-            ], 404);
-        }
+        $attendance = Attendance::findOrFail($attendanceRecord);
 
         $this->authorize('delete', $attendance);
 
