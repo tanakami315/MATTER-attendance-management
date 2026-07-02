@@ -44,6 +44,7 @@ class WorkStatusTest extends TestCase
             'user_id' => $user->id,
             'date' => today(),
             'clock_in' => now(),
+            'clock_out' => null,
         ]);
 
         $response = $this->actingAs($user)
@@ -60,19 +61,21 @@ class WorkStatusTest extends TestCase
      */
     public function test_break_status_is_displayed(): void
     {
-        Carbon::setTestNow('2026-07-01 12:00:00');
-
         $user = User::factory()->create();
+
+        Carbon::setTestNow('2026-07-01 12:00:00');
 
         $attendance = Attendance::create([
             'user_id' => $user->id,
             'date' => today(),
             'clock_in' => now()->subHours(3),
+            'clock_out' => null,
         ]);
 
         BreakTime::create([
             'attendance_id' => $attendance->id,
             'start_break' => now(),
+            'end_break' => null,
         ]);
 
         $response = $this->actingAs($user)
@@ -89,9 +92,9 @@ class WorkStatusTest extends TestCase
      */
     public function test_after_work_status_is_displayed(): void
     {
-        Carbon::setTestNow('2026-07-01 18:00:00');
-
         $user = User::factory()->create();
+
+        Carbon::setTestNow('2026-07-01 18:00:00');
 
         $attendance = Attendance::create([
             'user_id' => $user->id,

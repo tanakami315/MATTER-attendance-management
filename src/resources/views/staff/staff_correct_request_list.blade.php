@@ -1,11 +1,8 @@
 @extends('layouts.staff_app')
 
 @section('css')
-    <!-- 背景色、card、titleを記載 -->
 	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<!-- label以下を記載 -->
 	<link rel="stylesheet" href="{{ asset('css/status-label.css') }}">
-	<!-- list-table以下を記載 -->
 	<link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
 

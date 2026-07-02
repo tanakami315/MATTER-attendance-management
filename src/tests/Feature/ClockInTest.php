@@ -48,13 +48,13 @@ class ClockInTest extends TestCase
 
         Carbon::setTestNow('2026-07-01 18:00:00');
 
-        $attendance = Attendance::create([
+        Attendance::create([
             'user_id' => $user->id,
             'date' => today(),
             'clock_in' => now()->subHours(9),
             'clock_out' => now(),
         ]);
-
+    
         $response = $this->actingAs($user)
             ->get('/attendance');
 

@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Models\BreakTime;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,8 +43,6 @@ class DetailTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Carbon::setTestNow('2026-06-30 13:00:00');
-
         $attendance = Attendance::factory()->create([
             'user_id' => $user->id,
             'date' => today(),
@@ -55,8 +52,8 @@ class DetailTest extends TestCase
             ->get("/attendance/detail/{$attendance->id}");
 
         $response->assertStatus(200);
-        $response->assertSee(now()->format('Y年'));
-        $response->assertSee(now()->format('n月j日'));
+        $response->assertSee(today()->format('Y年'));
+        $response->assertSee(today()->format('n月j日'));
     }
 
     /**
@@ -68,13 +65,11 @@ class DetailTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Carbon::setTestNow('2026-06-30 18:15:00');
-
         $attendance = Attendance::factory()->create([
             'user_id' => $user->id,
             'date' => today(),
-            'clock_in' => Carbon::create(2026, 6, 30, 9, 0),
-            'clock_out' => Carbon::create(2026, 6, 30, 18, 0),
+            'clock_in' => today()->copy()->setTime(9, 0),
+            'clock_out' => today()->copy()->setTime(18, 0),
         ]);
 
         $response = $this->actingAs($user)
@@ -94,8 +89,6 @@ class DetailTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Carbon::setTestNow('2026-06-30 18:00:00');
-
         $attendance = Attendance::factory()->create([
             'user_id' => $user->id,
             'date' => today(),
@@ -103,8 +96,8 @@ class DetailTest extends TestCase
 
         BreakTime::create([
             'attendance_id' => $attendance->id,
-            'start_break' => now()->subHours(6),
-            'end_break' => now()->subHours(5),
+            'start_break' => today()->copy()->setTime(12, 0),
+            'end_break' => today()  ->copy()->setTime(13, 0),
         ]);
 
         $response = $this->actingAs($user)

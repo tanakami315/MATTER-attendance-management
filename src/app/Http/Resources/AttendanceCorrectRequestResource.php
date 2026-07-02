@@ -20,6 +20,10 @@ class AttendanceCorrectRequestResource extends JsonResource
             'clock_out' => $this->clock_out?->format('H:i'),
             'comment' => $this->comment,
             'status' => $this->status,
+
+            'breakCorrectRequests' => BreakCorrectRequestResource::collection(
+                $this->whenLoaded('breakCorrectRequests')
+            ),
         ];
     }
 }

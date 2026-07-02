@@ -22,9 +22,7 @@ class BreakTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Carbon::setTestNow('2026-07-01 09:00:00');
-
-        $attendance = Attendance::create([
+        Attendance::create([
             'user_id' => $user->id,
             'date' => today(),
             'clock_in' => now(),
@@ -90,7 +88,7 @@ class BreakTest extends TestCase
         $attendance = Attendance::create([
             'user_id' => $user->id,
             'date' => today(),
-            'clock_in' => now(),
+            'clock_in' => now()->subHours(4),
         ]);
 
         BreakTime::create([

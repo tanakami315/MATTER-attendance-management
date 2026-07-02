@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
 
             if ($e instanceof ModelNotFoundException) {
                 return response()->json([
-                    'message' => '勤怠情報が見つかりませんでした。'
+                    'error' => '勤怠情報が見つかりませんでした。'
                 ], 404);
             }
 
