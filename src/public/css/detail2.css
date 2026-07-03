@@ -1,58 +1,74 @@
 .detail-table {
-    margin-top: 40px;
     background: #fff;
     border-radius: 10px;
     letter-spacing: 0.15em;
 }
 
+.detail-table__inner {
+    width: 90%;
+}
+
 .detail-table__row {
-    display: grid;
-    grid-template-columns: 350px 100px 150px 100px 1fr;
-    align-items: center;
-    min-height: 80px;
     border-bottom: 2px solid #E1E1E1;
 }
 
 .detail-table__label {
-    padding-left: 45px;
+    width: 300px;
+    padding: 30px 0 30px 60px;
     font-size: 16px;
     font-weight: bold;
     color: #737373;
+    text-align: left;
 }
 
-.detail-table__value,
-.detail-table__mark {
+
+.detail-table__content,
+.detail-table__content--mark,
+.detail-table__content--comment {
     font-size: 16px;
     font-weight: bold;
+    color: #000000;
+}
+
+.detail-table__content {
+    width: 100px;
     text-align: center;
 }
 
-.detail-table__comment {
-    grid-column: 2 / 5;
+/* .detail-table__right-space {
+    padding-right: 200px;
+} */
+
+.detail-table__content--mark {
+    width: 50px;
+    text-align: center;
+}
+
+.detail-table__content--comment { 
+    padding-left: 10px;
+    text-align: left;
+}
+
+.detail-table__input,
+.detail-table__textarea {
     font-size: 16px;
     font-weight: bold;
+    border: solid 1px #E1E1E1;
+    border-radius: 4px;
 }
 
 .detail-table__input {
-    width: 100px;
+    width: 90px;
     height: 28px;
     text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-    border: solid 1px #E1E1E1;
-    border-radius: 4px;
 }
 
 .detail-table__textarea {
-    width: 100%;
+    width: 330px;
     height: 72px;
-    margin: 20px 0;
-    padding-left: 10px;
     box-sizing: border-box;
-    font-size: 16px;
-    font-weight: bold;
-    border: solid 1px #E1E1E1;
-    border-radius: 4px;
+    padding-left: 10px;
+    text-align: left;
 }
 
 .detail-table__action {
