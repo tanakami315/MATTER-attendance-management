@@ -53,7 +53,7 @@ class Handler extends ExceptionHandler
 
             if ($e instanceof AuthorizationException) {
                 return response()->json([
-                    'message' => 'この操作を行う権限がありません。'
+                    'error' => 'この操作を実行する権限がありません。'
                 ], 403);
             }
         }

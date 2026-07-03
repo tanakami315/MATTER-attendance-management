@@ -32,12 +32,8 @@
                     </td>
                     <td class="detail-table__content">
                     </td>
-                    <td class="detail-table__content">
+                    <td class="detail-table__content detail-table__right-space">
                         {{ $attendance->date->format('n月j日')}}
-                    </td>
-                    <td class="detail-table__content">
-                    </td>
-                    <td class="detail-table__content">
                     </td>
                 </tr>
                 <tr class="detail-table__row">
@@ -59,7 +55,7 @@
                     <td class="detail-table__content--mark">
                         ～
                     </td>
-                    <td class="detail-table__content">
+                    <td class="detail-table__content detail-table__right-space">
                         @if ($isPending)
                             <span>
                                 {{ $attendanceCorrectRequest->clock_out?->format('H:i') }}
@@ -87,7 +83,7 @@
                         <td class="detail-table__content--mark">
                             ～
                         </td>
-                        <td class="detail-table__content">
+                        <td class="detail-table__content detail-table__right-space">
                                 {{ $breakCorrectRequest?->end_break?->format('H:i') }}
                         </td>
                     </tr>
@@ -109,7 +105,7 @@
                             <td class="detail-table__content--mark">
                                 ～
                             </td>
-                            <td class="detail-table__content">
+                            <td class="detail-table__content detail-table__right-space">
                                 <input
                                     class="detail-table__input"
                                     type="text"
@@ -135,7 +131,7 @@
                         <td class="detail-table__content--mark">
                             ～
                         </td>
-                        <td class="detail-table__content">
+                        <td class="detail-table__content detail-table__right-space">
                             <input
                                 class="detail-table__input"
                                 type="text"

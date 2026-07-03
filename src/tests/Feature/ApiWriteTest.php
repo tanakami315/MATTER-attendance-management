@@ -4,9 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Attendance;
-use App\Models\AttendanceCorrectRequest;
-use App\Models\BreakTime;
-use App\Models\BreakCorrectRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

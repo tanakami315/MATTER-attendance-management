@@ -290,8 +290,8 @@ class StaffController extends Controller
                     'work_minutes' => 0,
                     'overtime_minutes' => 0,
                     'work_days' => 0,
-                    'work_time' => '0h 00m',
-                    'overtime_time' => '0h 00m',
+                    'work_time' => '0h 0m',
+                    'overtime_time' => '0h 0m',
                 ],
             ];
         });
@@ -333,12 +333,12 @@ class StaffController extends Controller
                     'overtime_minutes' => $overtimeMinutes,
                     'work_days' => $workDays,
                     'work_time' => sprintf(
-                        '%dh %02dm',
+                        '%dh %dm',
                         floor($workMinutes / 60),
                         $workMinutes % 60
                     ),
                     'overtime_time' => sprintf(
-                        '%dh %02dm',
+                        '%dh %dm',
                         floor($overtimeMinutes / 60),
                         $overtimeMinutes % 60
                     ),
@@ -359,9 +359,9 @@ class StaffController extends Controller
             : 0;
 
         $summary = [
-            'total_work_time' => sprintf('%dh %02dm', floor($totalWorkMinutes / 60), $totalWorkMinutes % 60),
-            'total_overtime_time' => sprintf('%dh %02dm', floor($totalOvertimeMinutes / 60), $totalOvertimeMinutes % 60),
-            'average_work_time' => sprintf('%dh %02dm', floor($averageWorkMinutes / 60), $averageWorkMinutes % 60),
+            'total_work_time' => sprintf('%dh %dm', floor($totalWorkMinutes / 60), $totalWorkMinutes % 60),
+            'total_overtime_time' => sprintf('%dh %dm', floor($totalOvertimeMinutes / 60), $totalOvertimeMinutes % 60),
+            'average_work_time' => sprintf('%dh %dm', floor($averageWorkMinutes / 60), $averageWorkMinutes % 60),
         ];
 
         // 今月の異常検知

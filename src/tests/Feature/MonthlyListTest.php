@@ -38,11 +38,9 @@ class MonthlyListTest extends TestCase
             ->get('/attendance/list');
 
         $response->assertStatus(200);
-
         $html = $response->getContent();
         $this->assertSame(15, substr_count($html, '09:00'));
         $this->assertSame(15, substr_count($html, '18:00'));
-
     }
 
     /**
