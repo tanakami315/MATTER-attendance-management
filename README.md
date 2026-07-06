@@ -20,7 +20,7 @@
     - 仕様書：total_time, total_break_time, breaks, applications
     - 実装：work_time, break_time, breakTimes, attendanceCorrectRequests
   - リソースクラス名
-    - 仕様書:AttendanceBreakResource, ApplicationResource
+    - 仕様書:AttendanceResource,AttendanceBreakResource, ApplicationResource
     - 実装:BreakTimeResource, AttendanceCorrectRequestResource
 
 ## 環境構築
@@ -118,16 +118,16 @@ vendor/bin/phpunit
 ## 使用技術(実行環境)
 - PHP 8.1.34
 - Laravel 8.83.8
+- Laravel Fortify
+- Laravel Sanctum
 - MySQL 8.0.26
+- nginx:1.21.1
+- Docker
+- Docker Compose
+- MailHog
 
 ## ER図
 ![ER図](ER.png)
-
-## URL
-- 開発環境：http://localhost
-  - 一般ユーザーログイン画面：http://localhost/login
-  - 管理者ログイン画面:：http://localhost/admin/login
-- Mailhog：http://localhost:8025
 
 ## ダミーデータ
 - ユーザー
@@ -144,9 +144,9 @@ vendor/bin/phpunit
       - 遅刻（9:30-18:00）2日
       - 早退（9:00-17:00）1 日
       - 長時間労働（8:00-21:00）1日
-    - 全日 固定休憩 12:00-13:00（1 時間）
+    - 休憩時間：全日固定12:00-13:00（1 時間）
   - ユーザー2
-    - 過去 5 ヶ月: 各月平日 15 日 = 75 日 の通常勤務（9:00-18:00）
+    - 過去 5 ヶ月: 各月平日 15 日 = 75 日 の通常勤務（9:00-18:00）（ただし、後述の修正申請が承認されることで長時間労働日が1日存在する。）
     - 当月 16 日 :
       - 通常 5 日
       - 残業（9:00-20:00）3 日
@@ -155,10 +155,10 @@ vendor/bin/phpunit
       - 早退（9:00-17:00）2 日
       - 早退（9:00-12:00）1 日
       - 長時間労働（9:00-21:00）1日
-    - 通常は固定休憩 12:00-13:00（1 時間）
-      ただし13時以降の出勤日、12時までの出勤日は休憩なし、
-      長時間労働日は2回目の休憩18:00-18:15（15分間）を追加
-    - 後述のattendance_id:150が承認済みのため、2カ月前に長時間労働日が1日存在する
+    - 休憩時間
+      - 通常は 12:00-13:00（1 時間）
+      - 13時以降の出勤日、12時までの出勤日は休憩なし、
+      - 長時間労働日（9:00-21:00）は2回目の休憩18:00-18:15（15分間）を追加
   - ユーザー3
     - 管理者は勤怠記録登録をしない想定のためデータ無し
 
@@ -178,3 +178,9 @@ vendor/bin/phpunit
     - 勤務時間時間：9:00-18:00
     - 休憩時間：12:30-13:30、19:00-19:30
     - ステータス：未承認
+
+## URL
+- 開発環境：http://localhost
+  - 一般ユーザーログイン画面：http://localhost/login
+  - 管理者ログイン画面:：http://localhost/admin/login
+- Mailhog：http://localhost:8025
