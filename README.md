@@ -8,7 +8,7 @@
 
 管理者は一般ユーザーの情報や勤怠情報、申請内容の確認ができます。また勤怠情報の修正や申請の承認をすることができます。
 
-## 特記
+## 仕様に関して特記
 - 管理者は本webアプリ上で新規登録することはできません。
 - 管理者は一般ユーザーとしてログインすることはできません。
 - 夜勤（日をまたぐ勤務）は想定していません。
@@ -112,22 +112,7 @@ php artisan migrate --env=testing
 
 8. テストの実行
 ```bash
-vendor/bin/phpunit tests/Feature/RegisterTest.php
-vendor/bin/phpunit tests/Feature/LoginTest.php
-vendor/bin/phpunit tests/Feature/LogoutTest.php
-vendor/bin/phpunit tests/Feature/ItemTest.php
-vendor/bin/phpunit tests/Feature/MylistTest.php
-vendor/bin/phpunit tests/Feature/SearchTest.php
-vendor/bin/phpunit tests/Feature/DetailTest.php
-vendor/bin/phpunit tests/Feature/LikeTest.php
-vendor/bin/phpunit tests/Feature/CommentTest.php
-vendor/bin/phpunit tests/Feature/PurchaseTest.php
-vendor/bin/phpunit tests/Feature/PurchaseMethodTest.php
-vendor/bin/phpunit tests/Feature/AddressTest.php
-vendor/bin/phpunit tests/Feature/ProfileTest.php
-vendor/bin/phpunit tests/Feature/ProfileEditTest.php
-vendor/bin/phpunit tests/Feature/SellTest.php
-vendor/bin/phpunit tests/Feature/VerifyEmailTest.php
+vendor/bin/phpunit
 ```
 
 ## 使用技術(実行環境)
@@ -140,4 +125,56 @@ vendor/bin/phpunit tests/Feature/VerifyEmailTest.php
 
 ## URL
 - 開発環境：http://localhost
+  - 一般ユーザーログイン画面：http://localhost/login
+  - 管理者ログイン画面:：http://localhost/admin/login
 - Mailhog：http://localhost:8025
+
+## ダミーデータ
+- ユーザー
+  - ユーザー1（一般）: user1@example.com / password / メール認証済み
+  - ユーザー2（一般）: user2@example.com / password / メール認証済み
+  - ユーザー3（管理者）: user3@example.com / password / メール認証済み
+
+- 勤怠記録
+  - ユーザー1
+    - 過去 5 ヶ月: 各月平日 15 日 = 75 日 の通常勤務（9:00-18:00）
+    - 当月 17 日 :
+      - 通常 10 日
+      - 残業（9:00-20:00）3 日
+      - 遅刻（9:30-18:00）2日
+      - 早退（9:00-17:00）1 日
+      - 長時間労働（8:00-21:00）1日
+    - 全日 固定休憩 12:00-13:00（1 時間）
+  - ユーザー2
+    - 過去 5 ヶ月: 各月平日 15 日 = 75 日 の通常勤務（9:00-18:00）
+    - 当月 16 日 :
+      - 通常 5 日
+      - 残業（9:00-20:00）3 日
+      - 遅刻（9:30-18:00）2日
+      - 遅刻（13:00-18:00）2日
+      - 早退（9:00-17:00）2 日
+      - 早退（9:00-12:00）1 日
+      - 長時間労働（9:00-21:00）1日
+    - 通常は固定休憩 12:00-13:00（1 時間）
+      ただし13時以降の出勤日、12時までの出勤日は休憩なし、
+      長時間労働日は2回目の休憩18:00-18:15（15分間）を追加
+    - 後述のattendance_id:150が承認済みのため、2カ月前に長時間労働日が1日存在する
+  - ユーザー3
+    - 管理者は勤怠記録登録をしない想定のためデータ無し
+
+- 勤怠修正申請
+  - attendance_id:80
+    - ユーザー1
+    - 勤務時間時間：8:00-18:00
+    - 休憩時間：12:30-13:30
+    - ステータス：未承認
+  - attendance_id:150
+    - ユーザー2
+    - 勤務時間時間：9:00-22:00
+    - 休憩時間：12:30-13:30、19:00-19:30
+    - ステータス：承認済み
+  - attendance_id:177
+    - ユーザー2
+    - 勤務時間時間：9:00-18:00
+    - 休憩時間：12:30-13:30、19:00-19:30
+    - ステータス：未承認

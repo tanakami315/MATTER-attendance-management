@@ -14,20 +14,20 @@
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__row">
-                <th class="list-table__center-align-text">名前</th>
+                <th class="list-table__center-align-text list-table__left-space-text">名前</th>
                 <th class="list-table__center-align-text">メールアドレス</th>
-                <th class="list-table__center-align-text">月次勤怠</th>
+                <th class="list-table__center-align-text list-table__right-space-text">月次勤怠</th>
             </tr>
-
+ 
             @foreach ($users as $user)
                 <tr class="list-table__row">
-                    <td class="list-table__center-align-text">
+                    <td class="list-table__center-align-text list-table__left-space-text">
                         {{ $user->name }}
                     </td>
                     <td class="list-table__center-align-text">
                         {{ $user->email }}
                     </td>
-                    <td class="list-table__center-align-text">
+                    <td class="list-table__center-align-text list-table__right-space-text">
                         <a
                             class="list-table__link"
                             href="{{ url('/admin/attendance/staff/' . $user->id) }}"

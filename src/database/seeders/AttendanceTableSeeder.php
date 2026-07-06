@@ -170,17 +170,17 @@ class AttendanceTableSeeder extends Seeder
 
         // 通常5日
         for ($i = 0; $i < 5; $i++) {
-            $this->createAttendance($user2, $workDates[$i], '09:00', '18:00', '12:30', '13:30');
+            $this->createAttendance($user2, $workDates[$i], '09:00', '18:00');
         }
 
         // 残業3日：9:00-20:00
         for ($i = 5; $i < 8; $i++) {
-            $this->createAttendance($user2, $workDates[$i], '09:00', '20:00', '12:30', '13:30');
+            $this->createAttendance($user2, $workDates[$i], '09:00', '20:00');
         }
 
         // 遅刻2日：9:30-18:00
         for ($i = 8; $i < 10; $i++) {
-            $this->createAttendance($user2, $workDates[$i], '09:30', '18:00', '12:30', '13:30');
+            $this->createAttendance($user2, $workDates[$i], '09:30', '18:00');
         }
 
         // 遅刻2日：13:00-18:00 休憩なし

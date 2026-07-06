@@ -21,6 +21,7 @@
 .list-table__center-align-text,
 .list-table__left-align-text,
 .list-table__link {
+    max-width: 300px;
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 16px;
@@ -53,6 +54,13 @@
     padding-left: 50px;
 }
 
+.list-table__left-space-text {
+    padding-left: 120px;
+}
+
+.list-table__right-space-text {
+    padding-right: 80px;
+}
 .list-table__flex-link {
     display: flex;
 }
