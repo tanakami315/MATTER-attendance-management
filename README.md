@@ -65,11 +65,6 @@ php artisan migrate
 php artisan db:seed
 ```
 
-9. 保存したファイルへのリンク作成
-```bash
-php artisan storage:link
-```
-
 ## 単体テスト
 1. rootユーザ（管理者）でログイン
 ```MySQLコンテナ上
@@ -167,7 +162,7 @@ vendor/bin/phpunit
     - ユーザー1
     - 勤務時間時間：8:00-18:00
     - 休憩時間：12:30-13:30
-    - ステータス：未承認
+    - ステータス：承認待ち
   - attendance_id:150
     - ユーザー2
     - 勤務時間時間：9:00-22:00
@@ -177,7 +172,7 @@ vendor/bin/phpunit
     - ユーザー2
     - 勤務時間時間：9:00-18:00
     - 休憩時間：12:30-13:30、19:00-19:30
-    - ステータス：未承認
+    - ステータス：承認待ち
 
 ## URL
 - 開発環境：http://localhost
