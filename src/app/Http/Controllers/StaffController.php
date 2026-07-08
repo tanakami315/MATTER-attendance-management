@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Attendance;
+use App\Models\AttendanceCorrectRequest;
+use App\Models\BreakTime;
+use App\Models\BreakCorrectRequest;
 use App\Http\Requests\AttendanceRequest;
 use Carbon\Carbon;
-use App\Models\Attendance;
-use App\Models\BreakTime;
-use App\Models\AttendanceCorrectRequest;
-use App\Models\BreakCorrectRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class StaffController extends Controller
 {
-    public function stamp()
+    /**
+     * Show the attendance register view for staff.
+     *
+     * @return View
+     */
+    public function stamp(): View
     {
         $attendance = Attendance::with('breakTimes')
             ->where('user_id', auth()->id())
@@ -47,60 +54,83 @@ class StaffController extends Controller
 
         return view('staff.staff_stamp', compact('attendance', 'status'));
     }
-    
-    // 勤務開始
-    public function start_work(Request $request)
+
+    /**
+     * Register the start of work for staff.
+     *
+     * @return RedirectResponse
+     */
+    public function start_work(): RedirectResponse
     {
-        $attendance['user_id'] = auth()->id();
-        $attendance['date'] = date('Y-m-d');
-        $attendance['clock_in'] = now();
-        Attendance::create($attendance);
+        Attendance::create([
+            'user_id' => auth()->id(),
+            'date' => today(),
+            'clock_in' => now(),
+        ]);
 
         return redirect('/attendance');
     }
 
-    // 勤務終了
-    public function end_work(Request $request)
+    /**
+     * Register the end of work for staff.
+     *
+     * @return RedirectResponse
+     */
+    public function end_work(): RedirectResponse
     {
-        $attendance['clock_out'] = now();
         Attendance::where('user_id', auth()->id())
-            ->whereDate('date', today())
-            ->update($attendance);
+            ->update([
+                'clock_out' => now(),
+            ]);
         return redirect('/attendance');
     }
 
-    // 休憩開始
-    public function start_break(Request $request)
+    /**
+     * Register the start of break for staff.
+     *
+     * @return RedirectResponse
+     */
+    public function start_break(): RedirectResponse
     {
         $attendance = Attendance::where('user_id', auth()->id())
             ->whereDate('date', today())
             ->first();
 
-        $break['attendance_id'] = $attendance->id;
-        $break['start_break'] = now();
-        BreakTime::create($break);
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'start_break' => now(),
+        ]);
 
         return redirect('/attendance');
     }
 
-    // 休憩終了
-    public function end_break(Request $request)
+    /**
+     * Register the end of break for staff.
+     *
+     * @return RedirectResponse
+     */
+    public function end_break(): RedirectResponse
     {
         $attendance = Attendance::where('user_id', auth()->id())
             ->whereDate('date', today())
             ->first();
 
-        $break['attendance_id'] = $attendance->id;
-        $break['end_break'] = now();
         BreakTime::where('attendance_id', $attendance->id)
             ->whereNull('end_break')
-            ->update($break);
+            ->update([
+                'end_break' => now(),
+            ]);
 
         return redirect('/attendance');
     }
 
-    // 勤怠一覧
-    public function monthlyList(Request $request)
+    /**
+     * Show the monthly attendance record for staff.
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function monthlyList(Request $request): View
     {
         $month = Carbon::parse(
             $request->month ?? now()->format('Y-m')
@@ -125,7 +155,7 @@ class StaffController extends Controller
 
         $prevMonth = $month->copy()->subMonth()->format('Y-m');
         $nextMonth = $month->copy()->addMonth()->format('Y-m');
-        
+
         return view('staff.staff_monthly_list', compact(
             'month',
             'dates',
@@ -135,32 +165,30 @@ class StaffController extends Controller
         ));
     }
 
-    // 勤怠詳細表示
-    public function detail($id)
-    {
-        $attendance = Attendance::with('user','breakTimes')
-            ->findOrFail($id);
+    /**
+     * Show the detail of the attendance record for staff.
+     *
+     * @param int $attendance_id
+     * @return View
+     */
+    public function detail(
+        int $attendance_id
+    ): View {
+        $attendance = Attendance::with([
+            'user',
+            'breakTimes',
+            'attendanceCorrectRequests.breakCorrectRequests',
+        ])->findOrFail($attendance_id);
 
         $breakTimes = $attendance->breakTimes;
 
-        $attendanceCorrectRequest = AttendanceCorrectRequest::where(
-            'attendance_id',
-            $attendance->id
-            )
-            ->latest()
+        $attendanceCorrectRequest = $attendance->attendanceCorrectRequests
+            ->sortByDesc('created_at')
             ->first();
-        
-        $breakCorrectRequests = null;
 
-        if ($attendanceCorrectRequest) {
-            $breakCorrectRequests = BreakCorrectRequest::where(
-                'attendance_correct_request_id',
-                $attendanceCorrectRequest->id
-                )
-                ->latest()
-                ->get();
-
-        }
+        $breakCorrectRequests = $attendanceCorrectRequest
+            ? $attendanceCorrectRequest->breakCorrectRequests
+            : collect();
 
         return view(
             'staff.staff_detail',
@@ -173,9 +201,16 @@ class StaffController extends Controller
         );
     }
 
-    // 申請作成
-    public function store(AttendanceRequest $request, $attendance_id)
-    {
+    /**
+     * Create the correct request for staff.
+     *
+     * @param AttendanceRequest $request
+     * @param int $attendance_id
+     * @return RedirectResponse
+     */
+    public function store(
+        AttendanceRequest $request, int $attendance_id
+    ): RedirectResponse {
         $attendance = Attendance::findOrFail($attendance_id);
 
         $attendanceCorrectRequest = AttendanceCorrectRequest::create([
@@ -206,23 +241,20 @@ class StaffController extends Controller
             ->with('flashSuccess', '申請を作成しました');
     }
 
-   // 申請一覧(管理者共通)
-    public function correctRequestList(Request $request)
+    /**
+     * Show the correct requests list for staff.
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function correctRequestList(Request $request): View
     {
         $tab = $request->query('tab');
 
-        $user = auth()->user();
-
-        // 管理者
-        if ($user->admin_status == 1){
-            $query = AttendanceCorrectRequest::with('attendance.user');
-        }
-        // スタッフ
-        else {$query = AttendanceCorrectRequest::with('attendance.user')
-        ->whereHas('attendance', function ($query) {
-            $query->where('user_id', auth()->id());
-        });
-        }
+        $query = AttendanceCorrectRequest::with('attendance.user')
+            ->whereHas('attendance', function ($query) {
+                $query->where('user_id', auth()->id());
+            });
 
         if ($tab === 'pending') {
             $query->where('status', 0);
@@ -231,25 +263,18 @@ class StaffController extends Controller
         }
         $attendanceCorrectRequests = $query->latest()->get();
 
-        // 管理者
-        if ($user->admin_status == 1){
-            return view(
-                'admin.admin_correct_request_list',
-                compact('attendanceCorrectRequests')
-            );
-        }
-
-        // スタッフ
-        else {
-            return view(
-                'staff.staff_correct_request_list',
-                compact('attendanceCorrectRequests')
-            );
-        }
+        return view(
+            'staff.staff_correct_request_list',
+            compact('attendanceCorrectRequests')
+        );
     }
 
-    // レポート
-    public function report()
+    /**
+     * Show the attendance report for staff.
+     *
+     * @return View
+     */
+    public function report(): View
     {
         // 6か月分の空データ作成
         $baseMonthlyTotals = collect(range(5, 0))->mapWithKeys(function ($i) {
@@ -260,8 +285,8 @@ class StaffController extends Controller
                     'work_minutes' => 0,
                     'overtime_minutes' => 0,
                     'work_days' => 0,
-                    'work_time' => '0h 00m',
-                    'overtime_time' => '0h 00m',
+                    'work_time' => '0h 0m',
+                    'overtime_time' => '0h 0m',
                 ],
             ];
         });
@@ -270,27 +295,24 @@ class StaffController extends Controller
             ->where('user_id', auth()->id())
             ->where('date', '>=', now()->subMonths(5)->startOfMonth())
             ->get();
-        
+
         // 実際の勤怠
         $actualMonthlyTotals = $attendances
             ->groupBy(function ($attendance) {
                 return $attendance->date->format('Y-m');
             })
             ->map(function ($attendances) {
-                //出退勤が終了している日数のみ抽出
+                // 出退勤が終了している日数のみ抽出
                 $completedAttendances = $attendances->filter(function ($attendance) {
                     return $attendance->clock_in && $attendance->clock_out;
                 });
 
-                // 総労働時間（1カ月）
                 $workMinutes = $completedAttendances->sum(function ($attendance) {
                     return $attendance->work_minutes;
                 });
 
-                // 就労日数（1カ月）
                 $workDays = $completedAttendances->count();
 
-                // 残業時間（分) 8時間超過分の和
                 $overtimeMinutes = $completedAttendances->sum(function ($attendance) {
                     return max(
                         0,
@@ -303,81 +325,77 @@ class StaffController extends Controller
                     'overtime_minutes' => $overtimeMinutes,
                     'work_days' => $workDays,
                     'work_time' => sprintf(
-                        '%dh %02dm',
+                        '%dh %dm',
                         floor($workMinutes / 60),
                         $workMinutes % 60
                     ),
                     'overtime_time' => sprintf(
-                        '%dh %02dm',
+                        '%dh %dm',
                         floor($overtimeMinutes / 60),
                         $overtimeMinutes % 60
                     ),
                 ];
             });
 
-            // 基本サマリー
-            $monthlyTotals = $baseMonthlyTotals->merge($actualMonthlyTotals);
-            // 総労働時間（6ヵ月）
-            $totalWorkMinutes = $monthlyTotals->sum('work_minutes');
-            // 総残業時間（6ヵ月）
-            $totalOvertimeMinutes = $monthlyTotals->sum('overtime_minutes');
-            // 総出勤日数（6ヵ月）
-            $totalWorkDays = $monthlyTotals->sum('work_days');
-            // 平均労働時間（6ヵ月から算出）/日
-            $averageWorkMinutes = $totalWorkDays > 0
-                ? floor($totalWorkMinutes / $totalWorkDays)
-                : 0;
+        // 基本サマリー
+        $monthlyTotals = $baseMonthlyTotals->merge($actualMonthlyTotals)->sortKeys();
+        // 総労働時間（6ヵ月）
+        $totalWorkMinutes = $monthlyTotals->sum('work_minutes');
+        // 総残業時間（6ヵ月）
+        $totalOvertimeMinutes = $monthlyTotals->sum('overtime_minutes');
+        // 総出勤日数（6ヵ月）
+        $totalWorkDays = $monthlyTotals->sum('work_days');
+        // 平均労働時間（6ヵ月から算出）/日
+        $averageWorkMinutes = $totalWorkDays > 0
+            ? floor($totalWorkMinutes / $totalWorkDays)
+            : 0;
 
-            $summary = [
-                'total_work_time' => sprintf('%dh %02dm', floor($totalWorkMinutes / 60), $totalWorkMinutes % 60),
-                'total_overtime_time' => sprintf('%dh %02dm', floor($totalOvertimeMinutes / 60), $totalOvertimeMinutes % 60),
-                'average_work_time' => sprintf('%dh %02dm', floor($averageWorkMinutes / 60), $averageWorkMinutes % 60),
-            ];
+        $summary = [
+            'total_work_time' => sprintf('%dh %dm', floor($totalWorkMinutes / 60), $totalWorkMinutes % 60),
+            'total_overtime_time' => sprintf('%dh %dm', floor($totalOvertimeMinutes / 60), $totalOvertimeMinutes % 60),
+            'average_work_time' => sprintf('%dh %dm', floor($averageWorkMinutes / 60), $averageWorkMinutes % 60),
+        ];
 
-            // 今月の異常検知
-            $thisMonthAttendances = $attendances->filter(function ($attendance) {
-                return $attendance->date->between(
-                    now()->startOfMonth(),
-                    now()->endOfMonth()
-                );
-            });
+        // 今月の異常検知
+        $thisMonthAttendances = $attendances->filter(function ($attendance) {
+            return $attendance->date->between(
+                now()->startOfMonth(),
+                now()->endOfMonth()
+            );
+        });
 
-            $lateCount = 0;
-            $earlyLeaveCount = 0;
-            $longWorkCount = 0;
+        // 出退勤が終了している日数のみ抽出
+        $completedThisMonthAttendances = $thisMonthAttendances->filter(function ($attendance) {
+            return $attendance->clock_in && $attendance->clock_out;
+        });
 
-            //出退勤が終了している日数のみ抽出
-            $completedThisMonthAttendances = $thisMonthAttendances->filter(function ($attendance) {
-                return $attendance->clock_in && $attendance->clock_out;
-            });
+        // 遅刻（9:00より後）
+        $lateCount = $completedThisMonthAttendances
+            ->filter(function ($attendance) {
+                return $attendance->clock_in->format('H:i') > '09:00';
+            })
+            ->count();
 
-            // 遅刻（9:00より後）
-            $lateCount= $completedThisMonthAttendances
-                ->filter(function ($attendance) {
-                    return $attendance->clock_in->format('H:i') > '09:00';
-                })
-                ->count();
+        // 早退（18:00より前）
+        $earlyLeaveCount = $completedThisMonthAttendances
+            ->filter(function ($attendance) {
+                return $attendance->clock_out->format('H:i') < '18:00';
+            })
+            ->count();
 
-            // 早退（18:00より前）
-            $earlyLeaveCount= $completedThisMonthAttendances
-                ->filter(function ($attendance) {
-                    return $attendance->clock_out->format('H:i') < '18:00';
-                })
-                ->count();
-            
-            // 長時間労働（10時間より長い）
-            $longWorkCount= $completedThisMonthAttendances
-                ->filter(function ($attendance) {
-                    return $attendance->work_minutes > 10 * 60 ;
-                })
-                ->count();
-        
-            return view('staff.staff_report', compact(
-                'monthlyTotals',
-                'summary',
-                'lateCount',
-                'earlyLeaveCount',
-                'longWorkCount',
-            ));
-            }
+        // 長時間労働（10時間より長い）
+        $longWorkCount = $completedThisMonthAttendances
+            ->filter(function ($attendance) {
+                return $attendance->work_minutes > 10 * 60;
+            })
+            ->count();
+
+        return view('staff.staff_report', compact(
+            'monthlyTotals',
+            'summary',
+            'lateCount',
+            'earlyLeaveCount',
+            'longWorkCount',
+        ));
+    }
 }

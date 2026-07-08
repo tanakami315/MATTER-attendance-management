@@ -1,12 +1,9 @@
 @extends('layouts.staff_app')
 
 @section('css')
-    <!-- 背景色、card、titleを記載 -->
-	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<!-- label以下を記載 -->
-	<link rel="stylesheet" href="{{ asset('css/status-label.css') }}">
-	<!-- list-table以下を記載 -->
-	<link rel="stylesheet" href="{{ asset('css/list.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/status-label.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
 
 @section('content')
@@ -14,24 +11,23 @@
     <h1 class="title">
         申請一覧
     </h1>
-    
     <nav class="status-label">
         <div class="status-label__inner">
             <a
                 href="{{ url('/stamp_correction_request/list/?tab=pending') }}"
-                class="status-label__link {{ request('tab')=='pending'?' status-label__link--active' : '' }}"
+                class="status-label__link {{ request('tab') == 'pending'?' status-label__link--active' : '' }}"
             >
                 承認待ち
             </a>
             <a
                 href="{{ url('/stamp_correction_request/list/?tab=approved') }}"
-                class="status-label__link {{ request('tab')=='approved'?' status-label__link--active' : '' }}"
+                class="status-label__link {{ request('tab') == 'approved'?' status-label__link--active' : '' }}"
             >
                 承認済み
             </a>
         </div>
     </nav>
-    
+
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__header">
@@ -49,8 +45,6 @@
                             承認待ち
                         @elseif ($attendanceCorrectRequest->status == 1)
                             承認済み
-                        @else
-                            差戻
                         @endif
                     </td>
                     <td class="list-table__left-align-text">
@@ -77,4 +71,5 @@
             @endforeach
         </table>
     </div>
+</div>
 @endsection

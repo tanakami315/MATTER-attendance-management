@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Models\Attendance;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\Attendance;
 
 class UpdateAttendanceRecordRequest extends FormRequest
 {
@@ -13,9 +13,9 @@ class UpdateAttendanceRecordRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-            return true;
+        return true;
     }
 
     /**
@@ -23,7 +23,7 @@ class UpdateAttendanceRecordRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $attendance = Attendance::find($this->route('attendanceRecord'));
 
@@ -31,14 +31,15 @@ class UpdateAttendanceRecordRequest extends FormRequest
             'date' => [
                 'required',
                 'date_format:Y-m-d',
-                    Rule::unique('attendances', 'date')
-                        ->ignore($this->route('attendanceRecord'))
-                        ->where(function ($query) use ($attendance) {
-                            if (! $attendance) {
-                                return $query->whereRaw('1 = 0');
-                            }
-                            return $query->where('user_id', $attendance->user_id);
-                        }),
+                Rule::unique('attendances', 'date')
+                    ->ignore($this->route('attendanceRecord'))
+                    ->where(function ($query) use ($attendance) {
+                        if (! $attendance) {
+                            // 勤怠が存在しない場合は一致するレコードを0件にする
+                            return $query->whereRaw('1 = 0');
+                        }
+                        return $query->where('user_id', $attendance->user_id);
+                    }),
             ],
             'clock_in' => [
                 'required',
@@ -56,7 +57,12 @@ class UpdateAttendanceRecordRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    /**
+     * Get the error messages.
+     *
+     * @return array
+     */
+    public function messages(): array
     {
         return [
             'date.required' => '必須未入力：勤怠日は必須です。',
@@ -66,7 +72,7 @@ class UpdateAttendanceRecordRequest extends FormRequest
             'clock_in.date_format' => '形式不正：出勤時刻は HH:MM:SS 形式で指定してください。',
             'clock_out.date_format' => '形式不正：退勤時刻は HH:MM:SS 形式で指定してください。',
             'clock_out.after' => 'clock_inより前：退勤時刻は出勤時刻より後の時刻を指定してください。',
-            'comment.max' => '255文字超：備考は255文字以内で入力してください'
+            'comment.max' => '255文字超：備考は255文字以内で入力してください。',
         ];
     }
 }

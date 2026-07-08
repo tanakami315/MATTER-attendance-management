@@ -1,11 +1,8 @@
 @extends('layouts.staff_app')
 
 @section('css')
-    <!-- 背景色、card、titleを記載 -->
 	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<!-- date-navigation以下を記載 -->
     <link rel="stylesheet" href="{{ asset('css/date-navigation.css') }}">
-	<!-- list-table以下を記載 -->
 	<link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
 
@@ -18,11 +15,12 @@
     <div class="date-navigation">
         <a
             class="date-navigation__link"
-            href="/attendance/list?month={{ $prevMonth }}"
+            href="{{ url('/attendance/list?month=' . $prevMonth) }}"
         >
             <img
                 class="date-navigation__link-icon"
                 src="{{ asset('image/arrow.png') }}"
+                alt="前月"
             >
             前月
         </a>
@@ -30,16 +28,18 @@
             <img
                 class="date-navigation__current-icon"
                 src="{{ asset('image/calendar.png') }}"
+                alt="カレンダー"
             >
             {{ $month->format('Y/m') }}
         </span>
         <a
             class="date-navigation__link"
-            href="/attendance/list?month={{ $nextMonth }}"
+            href="{{ url('/attendance/list?month=' . $nextMonth) }}"
         >
             <img
                 class="date-navigation__link-icon date-navigation__link-icon--rotate"
                 src="{{ asset('image/arrow.png') }}"
+                alt="翌月"
             >
             翌月
         </a>
@@ -48,7 +48,7 @@
     @php
         $week = ['日', '月', '火', '水', '木', '金', '土'];
     @endphp
-    
+
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__header">
@@ -64,7 +64,7 @@
                 @php
                     $attendance = $attendances->get($date->format('Y-m-d'));
                 @endphp
-                
+
                 <tr class="list-table__row">
                     <td class="list-table__left-align-text list-table__wide-text">
                         {{ $date->format('m/d') }}（{{ $week[$date->dayOfWeek] }}）
@@ -80,7 +80,7 @@
                     </td>
                     <td class="list-table__center-align-text">
                         {{ $attendance?->work_time }}
-                    </td>   
+                    </td>
                     <td class="list-table__center-align-text">
                         @if ($attendance)
                             <a
@@ -89,7 +89,6 @@
                             >
                                 詳細
                             </a>
-                        @else
                         @endif
                     </td>
                 </tr>

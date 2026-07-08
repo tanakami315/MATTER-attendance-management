@@ -2,34 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AttendanceRequest;
-use Carbon\Carbon;
-use App\Models\User;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrectRequest;
-use App\Models\BreakCorrectRequest;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminController extends Controller
 {
-    // ログイン
-    public function showLogin(Request $request)
-    {
+    /**
+     * Show the login page for admin.
+     *
+     * @param Request $request
+     * @return View|RedirectResponse
+     */
+    public function showLogin(
+        Request $request
+    ): View|RedirectResponse {
         if (Auth::check()) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-        
+
             return redirect('/admin/login');
         }
-        return view('admin.admin_login');
+        return view('auth.admin_login');
     }
 
-    // 日別勤怠一覧
-    public function adminDailyList(Request $request)
-    {
+    /**
+     * Show the daily attendance record for admin.
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function adminDailyList(
+        Request $request
+    ): View {
         $day = Carbon::parse(
             $request->day ?? now()->format('Y-m-d')
         );
@@ -49,21 +62,27 @@ class AdminController extends Controller
         ));
     }
 
-    // 勤怠詳細表示
-    public function adminDetail($admin_id)
-    {
+    /**
+     * Show the detail of the attendance record for admin.
+     *
+     * @param int $attendance_id
+     * @return View
+     */
+    public function adminDetail(
+        int $attendance_id
+    ): View {
         $attendance = Attendance::with([
             'user',
             'breakTimes',
             'attendanceCorrectRequests.breakCorrectRequests',
-        ])->findOrFail($admin_id);
+        ])->findOrFail($attendance_id);
 
         $breakTimes = $attendance->breakTimes;
 
-        $attendanceCorrectRequest = $attendance-> attendanceCorrectRequests
+        $attendanceCorrectRequest = $attendance->attendanceCorrectRequests
             ->sortByDesc('created_at')
             ->first();
-        
+
         $breakCorrectRequests = $attendanceCorrectRequest
             ? $attendanceCorrectRequest->breakCorrectRequests
             : collect();
@@ -79,11 +98,18 @@ class AdminController extends Controller
         );
     }
 
-    // 勤怠修正
-    public function updateAttendance(AttendanceRequest $request, $attendance_id)
-    {
+    /**
+     * Update the attendance record for admin.
+     *
+     * @param AttendanceRequest $request
+     * @param int $attendance_id
+     * @return RedirectResponse
+     */
+    public function updateAttendance(
+        AttendanceRequest $request, int $attendance_id
+    ): RedirectResponse {
         $attendance = Attendance::findOrFail($attendance_id);
-        
+
         $date = $attendance->date->format('Y-m-d');
 
         $attendance->update([
@@ -109,20 +135,31 @@ class AdminController extends Controller
             ->with('flashSuccess', '勤怠を更新しました');
     }
 
-    // スタッフ一覧
-    public function adminStaffList()
+    /**
+     * Show the staff list for admin.
+     *
+     * @return View
+     */
+    public function adminStaffList(): View
     {
-        $users = User::where('admin_status',0)->get();
+        $users = User::where('admin_status', 0)->get();
         return view('admin.admin_staff_list', compact('users'));
     }
 
-    // スタッフ別月次勤怠一覧
-    public function adminMonthlyList($user_id, Request $request)
-    {
+    /**
+     * Show the personal monthly attendance record for admin.
+     *
+     * @param Request $request
+     * @param int $user_id
+     * @return View
+     */
+    public function adminMonthlyList(
+        Request $request, int $user_id
+    ): View {
         $month = Carbon::parse(
             $request->month ?? now()->format('Y-m')
         );
-        
+
         $start = $month->copy()->startOfMonth();
         $end = $month->copy()->endOfMonth();
 
@@ -144,7 +181,7 @@ class AdminController extends Controller
 
         $prevMonth = $month->copy()->subMonth()->format('Y-m');
         $nextMonth = $month->copy()->addMonth()->format('Y-m');
-        
+
         return view('admin.admin_monthly_list', compact(
             'month',
             'dates',
@@ -155,17 +192,47 @@ class AdminController extends Controller
         ));
     }
 
-    // 申請一覧 passがstaffと同一のためStaffControllerに記載
+    /**
+     * Show the correct requests list for admin.
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function adminCorrectRequestList(
+        Request $request
+    ): View {
+        $tab = $request->query('tab');
 
-    // 申請詳細表示
-    public function adminRequestDetail($admin_correct_request_id)
-    {
+        $query = AttendanceCorrectRequest::with('attendance.user');
+
+        if ($tab === 'pending') {
+            $query->where('status', 0);
+        } elseif ($tab === 'approved') {
+            $query->where('status', 1);
+        }
+        $attendanceCorrectRequests = $query->latest()->get();
+
+        return view(
+            'admin.admin_correct_request_list',
+            compact('attendanceCorrectRequests')
+        );
+    }
+
+    /**
+     * Show the detail of correct requests for admin.
+     *
+     * @param int $attendance_correct_request_id
+     * @return View
+     */
+    public function adminRequestDetail(
+        int $attendance_correct_request_id
+    ): View {
         $attendanceCorrectRequest = AttendanceCorrectRequest::with(
             'attendance.user',
             'breakCorrectRequests'
             )
-            ->findOrFail($admin_correct_request_id);
-        
+            ->findOrFail($attendance_correct_request_id);
+
         return view(
             'admin.admin_request_detail',
             compact(
@@ -174,14 +241,20 @@ class AdminController extends Controller
         );
     }
 
-    // 申請承認
-    public function approve($attendance_correct_request_id)
-    {
+    /**
+     * Approve the correct request for admin.
+     *
+     * @param int $attendance_correct_request_id
+     * @return RedirectResponse
+     */
+    public function approve(
+        int $attendance_correct_request_id
+    ): RedirectResponse {
         $attendanceCorrectRequest = AttendanceCorrectRequest::with([
             'attendance.breakTimes',
             'breakCorrectRequests',
         ])->findOrFail($attendance_correct_request_id);
-        
+
         $attendance = $attendanceCorrectRequest->attendance;
 
         $attendance->update([
@@ -200,7 +273,7 @@ class AdminController extends Controller
                 ]);
             }
         }
-                
+
         $attendanceCorrectRequest->update([
             'status' => 1,
         ]);
@@ -209,9 +282,16 @@ class AdminController extends Controller
             ->with('flashSuccess', '申請を承認しました');
     }
 
-    // CSV出力
-    public function export($user_id, Request $request)
-    {
+    /**
+     * Export the personal monthly attendance record to csv for admin.
+     *
+     * @param Request $request
+     * @param int $user_id
+     * @return StreamedResponse
+     */
+    public function export(
+        Request $request, int $user_id
+    ): StreamedResponse {
         $month = Carbon::parse($request->month ?? now()->format('Y-m'));
 
         $start = $month->copy()->startOfMonth();

@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StaffController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\StaffController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,27 +14,29 @@ use App\Http\Controllers\AdminController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','admin.status'])->group(function () {
     // 申請一覧
-    Route::get('/stamp_correction_request/list', [StaffController::class, 'correctRequestList']);
+    Route::get('/stamp_correction_request/list', function (Request $request) {
+        if (auth()->user()->admin_status) {
+            return app(AdminController::class)->adminCorrectRequestList($request);
+        }
+        return app(StaffController::class)->correctRequestList($request);
+    });
 });
 
-Route::middleware(['auth', 'can:staff'])->group(function () {
-    // 勤怠登録画面
-    Route::get('/attendance', [StaffController::class, 'stamp']);
+Route::middleware('auth')->group(function () {
     Route::get('/redirect-after-login', function () {
         if (! auth()->user()->hasVerifiedEmail()) {
             return redirect('/email/verify');
         }
         return redirect()->intended('/attendance');
     });
-    Route::post('/start-work', [StaffController::class, 'start_work']);
-    Route::post('/end-work', [StaffController::class, 'end_work']);
-    Route::post('/start-break', [StaffController::class, 'start_break']);
-    Route::post('/end-break', [StaffController::class, 'end_break']);
+    // 勤怠登録画面
+    Route::get('/attendance', [StaffController::class, 'stamp']);
+    Route::post('/start_work', [StaffController::class, 'start_work']);
+    Route::post('/end_work', [StaffController::class, 'end_work']);
+    Route::post('/start_break', [StaffController::class, 'start_break']);
+    Route::post('/end_break', [StaffController::class, 'end_break']);
     // 勤怠一覧画面
     Route::get('/attendance/list', [StaffController::class, 'monthlyList']);
     // 勤怠詳細画面
@@ -69,7 +72,7 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
         [AdminController::class, 'approve']
     );
     Route::post(
-        '/admin/correct/{attendance_id}', 
+        '/admin/correct/{attendance_id}',
         [AdminController::class, 'updateAttendance']
     );
 });

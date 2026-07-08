@@ -7,7 +7,7 @@
 @section('content')
 <div class="user-form">
 	<h1 class="user-form__title">ログイン</h1>
-	<form class="user-form__content" action="/login" method="post" novalidate>
+	<form class="user-form__content" action="{{ url('/login') }}" method="POST" novalidate>
 		@csrf
 		<input type="hidden" name="login_type" value="staff">
 		<div class="user-form__group">
@@ -20,6 +20,7 @@
 				</label>
 				<input
 					class="user-form__input"
+					id="email"
 					type="email"
 					name="email"
 					value="{{ old('email') }}"
@@ -40,9 +41,9 @@
 				</label>
 				<input
 					class="user-form__input"
+					id="password"
 					type="password"
 					name="password"
-					value="{{ old('password') }}"
 				/>
 				<span class="input-form__error">
 					@error('password')

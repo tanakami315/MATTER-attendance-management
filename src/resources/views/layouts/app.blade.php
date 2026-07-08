@@ -1,7 +1,3 @@
-@php
-use Illuminate\Support\Str;
-@endphp
-
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -18,11 +14,12 @@ use Illuminate\Support\Str;
 <body>
     <header class="header">
         <div class="header__inner">
-            <a class="header__logo">
+            <div class="header__logo">
                 <img src="{{ asset('image/COACHTECH.png') }}" alt="COACHTECH">
-            </a>
+            </div>
+        </div>
     </header>
-    
+
     <main>
         @yield('content')
     </main>

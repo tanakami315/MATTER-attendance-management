@@ -10,7 +10,14 @@ class AttendanceRecordPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
+    /**
+     * Perform pre-authorization checks.
+     *
+     * @param User $user
+     * @param string $ability
+     * @return bool|null
+     */
+    public function before(User $user, string $ability): ?bool
     {
         if ($user->admin_status) {
             return true;
@@ -18,50 +25,16 @@ class AttendanceRecordPolicy
 
         return null;
     }
-    /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function viewAny(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Attendance  $attendance
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function view(User $user, Attendance $attendance)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can create models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function create(User $user)
-    {
-        //
-    }
 
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Attendance  $attendance
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  User  $user
+     * @param  Attendance  $attendance
+     * @return bool
      */
-    public function update(User $user, Attendance $attendance)
+    public function update(User $user, Attendance $attendance): bool
     {
-
         // スタッフは自分の勤怠のみ更新可能
         return $user->id === $attendance->user_id;
     }
@@ -69,37 +42,13 @@ class AttendanceRecordPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Attendance  $attendance
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  User  $user
+     * @param  Attendance  $attendance
+     * @return bool
      */
-    public function delete(User $user, Attendance $attendance)
+    public function delete(User $user, Attendance $attendance): bool
     {
-        // スタッフは自分の勤怠のみ更新可能
+        // スタッフは自分の勤怠のみ削除可能
         return $user->id === $attendance->user_id;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Attendance  $attendance
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, Attendance $attendance)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Attendance  $attendance
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, Attendance $attendance)
-    {
-        //
     }
 }

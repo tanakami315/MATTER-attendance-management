@@ -10,7 +10,12 @@ use Carbon\Carbon;
 
 class AttendanceTableSeeder extends Seeder
 {
-    private function isHoliday(Carbon $date): bool
+    /**
+     * Determine whether the given date is a holiday.
+     * @param Carbon $date
+     * @return bool
+     */
+    private function isHoliday(Carbon $date)
     {
         // 土日
         if ($date->isWeekend()) {
@@ -58,6 +63,11 @@ class AttendanceTableSeeder extends Seeder
         return in_array($date->format('Y-m-d'), $holidays, true);
     }
 
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
     public function run()
     {
         $user1 = User::where('email', 'user1@example.com')->firstOrFail();
@@ -124,7 +134,7 @@ class AttendanceTableSeeder extends Seeder
         // 長時間労働1日：8:00-21:00
         $this->createAttendance($user1, $workDates[16], '08:00', '21:00');
 
-        //  user2の勤怠
+        // user2の勤怠
         // 過去5ヶ月：各月 平日15日、9:00-18:00
         for ($i = 5; $i >= 1; $i--) {
             $month = now()->subMonths($i)->startOfMonth();
@@ -135,7 +145,7 @@ class AttendanceTableSeeder extends Seeder
                     continue;
                 }
 
-                $this->createAttendance($user2, $date, '09:00', '18:00', '12:30', '13:30');
+                $this->createAttendance($user2, $date, '09:00', '18:00');
                 $count++;
 
                 if ($count >= 15) {
@@ -160,17 +170,17 @@ class AttendanceTableSeeder extends Seeder
 
         // 通常5日
         for ($i = 0; $i < 5; $i++) {
-            $this->createAttendance($user2, $workDates[$i], '09:00', '18:00', '12:30', '13:30');
+            $this->createAttendance($user2, $workDates[$i], '09:00', '18:00');
         }
 
         // 残業3日：9:00-20:00
         for ($i = 5; $i < 8; $i++) {
-            $this->createAttendance($user2, $workDates[$i], '09:00', '20:00', '12:30', '13:30');
+            $this->createAttendance($user2, $workDates[$i], '09:00', '20:00');
         }
 
         // 遅刻2日：9:30-18:00
         for ($i = 8; $i < 10; $i++) {
-            $this->createAttendance($user2, $workDates[$i], '09:30', '18:00', '12:30', '13:30');
+            $this->createAttendance($user2, $workDates[$i], '09:30', '18:00');
         }
 
         // 遅刻2日：13:00-18:00 休憩なし
@@ -202,32 +212,41 @@ class AttendanceTableSeeder extends Seeder
 
     }
 
+    /**
+     * Create an attendance record with an optional break time.
+     *
+     * @param User $user
+     * @param Carbon $date
+     * @param string $clockIn
+     * @param string $clockOut
+     * @param string|null $breakStart
+     * @param string|null $breakEnd
+     * @return Attendance
+     */
     private function createAttendance(
-            $user,
-            Carbon $date,
-            string $clockIn,
-            string $clockOut,
-            ?string $breakStart = '12:00',
-            ?string $breakEnd = '13:00'
-        ) {
-            $attendance = Attendance::create([
-                'user_id' => $user->id,
-                'date' => $date->format('Y-m-d'),
-                'clock_in' => Carbon::parse($date->format('Y-m-d') . ' ' . $clockIn),
-                'clock_out' => Carbon::parse($date->format('Y-m-d') . ' ' . $clockOut),
-                'comment' => null,
+        $user,
+        Carbon $date,
+        string $clockIn,
+        string $clockOut,
+        ?string $breakStart = '12:00',
+        ?string $breakEnd = '13:00'
+    ) {
+        $attendance = Attendance::create([
+            'user_id' => $user->id,
+            'date' => $date->format('Y-m-d'),
+            'clock_in' => Carbon::parse($date->format('Y-m-d') . ' ' . $clockIn),
+            'clock_out' => Carbon::parse($date->format('Y-m-d') . ' ' . $clockOut),
+            'comment' => null,
+        ]);
+
+        if ($breakStart && $breakEnd) {
+            BreakTime::create([
+                'attendance_id' => $attendance->id,
+                'start_break' => Carbon::parse($date->format('Y-m-d') . ' ' . $breakStart),
+                'end_break' => Carbon::parse($date->format('Y-m-d') . ' ' . $breakEnd),
             ]);
-
-            if ($breakStart && $breakEnd) {
-                BreakTime::create([
-                    'attendance_id' => $attendance->id,
-                    'start_break' => Carbon::parse($date->format('Y-m-d') . ' ' . $breakStart),
-                    'end_break' => Carbon::parse($date->format('Y-m-d') . ' ' . $breakEnd),
-                ]);
-            }
-
-            return $attendance;
         }
 
-    
+        return $attendance;
+    }
 }

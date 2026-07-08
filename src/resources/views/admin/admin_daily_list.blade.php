@@ -1,12 +1,9 @@
 @extends('layouts.admin_app')
 
 @section('css')
-	<!-- 背景色、card、titleを記載 -->
-	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<!-- date-navigation以下を記載 -->
+    <link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/date-navigation.css') }}">
-	<!-- list-table以下を記載 -->
-	<link rel="stylesheet" href="{{ asset('css/list.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
 
 @section('content')
@@ -18,11 +15,12 @@
     <div class="date-navigation">
         <a
             class="date-navigation__link"
-            href="/admin/attendance/list?day={{ $prevDay }}"
+            href="{{ url('/admin/attendance/list?day=' . $prevDay) }}"
         >
             <img
                 class="date-navigation__link-icon"
                 src="{{ asset('image/arrow.png') }}"
+                alt="前日"
             >
             前日
         </a>
@@ -30,16 +28,18 @@
             <img
                 class="date-navigation__current-icon"
                 src="{{ asset('image/calendar.png') }}"
+                alt="カレンダー"
             >
             {{ $day->format('Y/m/d') }}
         </span>
         <a
             class="date-navigation__link"
-            href="/admin/attendance/list?day={{ $nextDay }}"
+            href="{{ url('/admin/attendance/list?day=' . $nextDay) }}"
         >
             <img
                 class="date-navigation__link-icon date-navigation__link-icon--rotate"
                 src="{{ asset('image/arrow.png') }}"
+                alt="翌日"
             >
             翌日
         </a>
@@ -53,7 +53,7 @@
                 <th class="list-table__center-align-text">退勤</th>
                 <th class="list-table__center-align-text">休憩</th>
                 <th class="list-table__center-align-text">合計</th>
-                <th class="list-table__center-align-text">詳細</th>
+                <th class="list-table__center-align-text list-table__right-space">詳細</th>
             </tr>
 
             @foreach ($attendances as $attendance)
@@ -62,18 +62,18 @@
                         {{ $attendance?->user?->name }}
                     </td>
                     <td class="list-table__center-align-text">
-                        {{ optional($attendance->clock_in)->format('H:i') }}
+                        {{ $attendance?->clock_in?->format('H:i') }}
                     </td>
                     <td class="list-table__center-align-text">
-                        {{ optional($attendance->clock_out)->format('H:i') }}
+                        {{ $attendance?->clock_out?->format('H:i') }}
                     </td>
                     <td class="list-table__center-align-text">
                         {{ $attendance?->break_time }}
                     </td>
                     <td class="list-table__center-align-text">
                         {{ $attendance?->work_time }}
-                    </td>   
-                    <td class="list-table__center-align-text">
+                    </td>
+                    <td class="list-table__center-align-text list-table__right-space">
                         <a
                             class="list-table__link"
                             href="{{ url('/admin/attendance/' . $attendance->id) }}"

@@ -21,6 +21,7 @@
 .list-table__center-align-text,
 .list-table__left-align-text,
 .list-table__link {
+    max-width: 300px;
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 16px;
@@ -53,12 +54,27 @@
     padding-left: 50px;
 }
 
+.list-table__left-wide-space {
+    padding-left: 100px;
+}
+
+.list-table__right-wide-space {
+    padding-right: 100px;
+}
+
+.list-table__left-space {
+    padding-left: 50px;
+}
+
+.list-table__right-space {
+    padding-right: 50px;
+}
 .list-table__flex-link {
     display: flex;
 }
 
 .list-table__comment {
-    width: 250px;
+    width: 200px;
     white-space: normal;
     word-break: break-word;
     line-height: 1.5;
@@ -66,13 +82,13 @@
     padding-bottom: 10px;
 }
 
-.request-action {
+.list-table__action {
     display: flex;
     justify-content: flex-end;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
-.export-button {
+.list-table__button {
     width: 184px;
     height: 50px;
     font-size:22px;
@@ -80,4 +96,5 @@
     color: #FFFFFFFF;
     border-radius: 5px;
     background-color:#000000;
+    letter-spacing: 0.15em;
 }

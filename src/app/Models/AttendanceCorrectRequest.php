@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Attendance;
-use App\Models\BreakCorrectRequest;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AttendanceCorrectRequest extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'attendance_id',
         'clock_in',
@@ -24,12 +24,22 @@ class AttendanceCorrectRequest extends Model
         'clock_out' => 'datetime',
     ];
 
-    public function attendance()
+    /**
+     * Get the attendance for the correction request.
+     *
+     * @return BelongsTo
+     */
+    public function attendance(): BelongsTo
     {
         return $this->belongsTo(Attendance::class);
     }
 
-    public function breakCorrectRequests()
+    /**
+     * Get the break correction requests for the attendance correction request.
+     *
+     * @return HasMany
+     */
+    public function breakCorrectRequests(): HasMany
     {
         return $this->hasMany(BreakCorrectRequest::class);
     }

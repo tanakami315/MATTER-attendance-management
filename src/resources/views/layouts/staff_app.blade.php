@@ -1,7 +1,3 @@
-@php
-use Illuminate\Support\Str;
-@endphp
-
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -9,9 +5,7 @@ use Illuminate\Support\Str;
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>coachtech勤怠管理アプリ_管理者専用</title>
-    <script src="https://kit.fontawesome.com/42694f25bf.js" crossorigin="anonymous"></script>
-    <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
+    <title>coachtech勤怠管理アプリ</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
@@ -21,41 +15,39 @@ use Illuminate\Support\Str;
 <body>
     <header class="header">
         <div class="header__inner">
-            <a class="header__logo">
+            <div class="header__logo">
                 <img src="{{ asset('image/COACHTECH.png') }}" alt="COACHTECH">
-            </a>
+            </div>
             <nav class="header__nav">
                 <a
-                    href="/attendance"
+                    href="{{ url('/attendance') }}"
                     class="header__nav-link
                         header__nav-link--common"
                 >
                     勤怠
                 </a>
                 <a
-                    href="/attendance/list"
+                    href="{{ url('/attendance/list') }}"
                     class="header__nav-link
                         header__nav-link--common"
                 >
                     勤怠一覧
                 </a>
                 <a
-                    href="/stamp_correction_request/list"
+                    href="{{ url('/stamp_correction_request/list') }}"
                     class="header__nav-link
                         header__nav-link--common"
                 >
                     申請
                 </a>
                 <a
-                    href="/attendance/report"
+                    href="{{ url('/attendance/report') }}"
                     class="header__nav-link
                         header__nav-link--common"
                 >
                     レポート
                 </a>
-                <form action="/logout"
-                    method="post"
-                >
+                <form action="{{ url('/logout') }}" method="POST">
                     @csrf
                     <button
                         class="header__nav-link
@@ -68,7 +60,7 @@ use Illuminate\Support\Str;
             </nav>
         </div>
     </header>
-    
+
     <main>
         @yield('content')
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -81,11 +73,11 @@ use Illuminate\Support\Str;
                 "positionClass": "toast-bottom-right",
             }
 
-            @if(Session::has('flashSuccess'))
+            @if (Session::has('flashSuccess'))
             toastr.success("{{ session('flashSuccess') }}");
             @endif
         </script>
-            @yield('js')
+        @yield('js')
     </main>
 
 </body>

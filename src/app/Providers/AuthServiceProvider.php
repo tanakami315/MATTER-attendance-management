@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Attendance;
+use App\Policies\AttendanceRecordPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use App\Policies\AttendanceRecordPolicy;
-use App\Models\Attendance;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,12 +27,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('staff', function ($user) {
-        return $user->admin_status == 0;
-        });
-
         Gate::define('admin', function ($user) {
-        return $user->admin_status == 1;
+            return $user->admin_status == 1;
         });
     }
 }
