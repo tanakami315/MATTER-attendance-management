@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V1\AttendanceRecordController;
+use App\Http\Controllers\Api\V1\AuthTokenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::apiResource('v1/attendance-records', AttendanceRecordController::class)
+    ->parameters([
+        'attendance-records' => 'attendanceRecord',
+    ])
+    ->only(['index', 'show']);
+
+Route::post('/v1/tokens', [AuthTokenController::class, 'store']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('v1/attendance-records', AttendanceRecordController::class)
+        ->parameters([
+            'attendance-records' => 'attendanceRecord',
+        ])
+        ->only(['store', 'update', 'destroy']);
 });

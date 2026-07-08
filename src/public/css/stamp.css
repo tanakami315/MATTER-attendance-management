@@ -1,0 +1,63 @@
+.attendance-form {
+    max-width: 400px;
+    margin: 100px auto 0 auto;
+    text-align: center;
+}
+
+.attendance-form__status {
+    margin: 100px auto 0;
+    width: 100px;
+    height: 40px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #696969;
+    background-color: #C8C8C8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.attendance-form__date {
+    margin-top: 20px;
+    font-size: 40px;
+}
+
+.attendance-form__time {
+    margin-top: 20px;
+    font-size: 80px;
+    font-weight: bold;
+}
+
+.attendance-form__button {
+    display: flex;
+    justify-content: center;
+}
+
+.attendance-form__button--attendance,
+.attendance-form__button--break {
+    margin: 50px 50px 0 50px;
+    width: 221px;
+    height: 77px;
+    font-size: 32px;
+    font-weight: bold;
+    border-radius: 20px;
+    border: none;
+}
+
+.attendance-form__button--attendance {
+    color: #FFFFFF;
+    background-color: #000000;
+}
+
+.attendance-form__button--break {
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+.attendance-form__comment {
+    margin-top: 80px;
+    font-size: 26px;
+    color: #000000;
+    font-weight: bold;
+}

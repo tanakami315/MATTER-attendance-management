@@ -11,7 +11,7 @@ class RegisterRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,11 +21,14 @@ class RegisterRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:20'],
-
+            'name' => [
+                'required',
+                'string',
+                'max:20',
+            ],
             'email' => [
                 'required',
                 'string',
@@ -33,7 +36,6 @@ class RegisterRequest extends FormRequest
                 'max:255',
                 'unique:users,email',
             ],
-
             'password' => [
                 'required',
                 'string',
@@ -43,13 +45,19 @@ class RegisterRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    /**
+     * Get the error messages.
+     *
+     * @return array
+     */
+    public function messages(): array
     {
         return [
-            'name.required'=> 'お名前を入力してください',
-            'name.max'=> 'お名前は20文字以内で入力してください',
+            'name.required' => 'お名前を入力してください',
+            'name.max' => 'お名前は20文字以内で入力してください',
             'email.required' => 'メールアドレスを入力してください',
             'email.email' => 'メールアドレスはメール形式で入力してください',
+            'email.max' => 'メールアドレスは255文字以内で入力してください',
             'password.required' => 'パスワードを入力してください',
             'password.min' => 'パスワードは8文字以上で入力してください',
             'password.confirmed' => 'パスワードと一致しません',
