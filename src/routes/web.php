@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StaffController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\StaffController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,9 +14,6 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-
 Route::middleware(['auth','admin.status'])->group(function () {
     // 申請一覧
     Route::get('/stamp_correction_request/list', function (Request $request) {
@@ -28,14 +25,14 @@ Route::middleware(['auth','admin.status'])->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    // 勤怠登録画面
-    Route::get('/attendance', [StaffController::class, 'stamp']);
     Route::get('/redirect-after-login', function () {
         if (! auth()->user()->hasVerifiedEmail()) {
             return redirect('/email/verify');
         }
         return redirect()->intended('/attendance');
     });
+    // 勤怠登録画面
+    Route::get('/attendance', [StaffController::class, 'stamp']);
     Route::post('/start_work', [StaffController::class, 'start_work']);
     Route::post('/end_work', [StaffController::class, 'end_work']);
     Route::post('/start_break', [StaffController::class, 'start_break']);
@@ -75,7 +72,7 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
         [AdminController::class, 'approve']
     );
     Route::post(
-        '/admin/correct/{attendance_id}', 
+        '/admin/correct/{attendance_id}',
         [AdminController::class, 'updateAttendance']
     );
 });

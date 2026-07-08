@@ -25,7 +25,7 @@ class AttendanceCorrectRequest extends Model
     ];
 
     /**
-     * Get the attendance which has the attendance correction request.
+     * Get the attendance for the correction request.
      *
      * @return BelongsTo
      */

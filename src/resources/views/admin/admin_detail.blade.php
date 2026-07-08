@@ -1,22 +1,21 @@
 @extends('layouts.admin_app')
 
 @section('css')
-	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/detail.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/detail.css') }}">
 @endsection
 
 @section('content')
 @php
-    $isPending = isset($attendance) && $attendanceCorrectRequest?->status === 0;
+    $isPending = $attendanceCorrectRequest?->status === 0;
 @endphp
 
 <div class="card">
     <h1 class="title">
         勤怠詳細
     </h1>
-    <form action="/admin/correct/{{ $attendance->id }}" method="POST">
+    <form action="{{ url ('/admin/correct/' . $attendance->id) }}" method="POST">
         @csrf
-        @method('POST')
         <div class="detail-table">
             <div class="detail-table__row">
                 <div class="detail-table__label">名前</div>
@@ -70,7 +69,7 @@
             </div>
 
             @if ($isPending)
-                @foreach($breakCorrectRequests as $breakCorrectRequest)
+                @foreach ($breakCorrectRequests as $breakCorrectRequest)
                 <div class="detail-table__row">
                     <div class="detail-table__label">
                         休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
@@ -85,7 +84,7 @@
                 </div>
                 @endforeach
             @else
-                @foreach($breakTimes as $index => $breakTime)
+                @foreach ($breakTimes as $index => $breakTime)
                     <div class="detail-table__row">
                         <div class="detail-table__label">
                             休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}

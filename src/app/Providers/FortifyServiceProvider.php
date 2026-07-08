@@ -3,19 +3,19 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
-use App\Models\User;
 use App\Http\Responses\LoginResponse;
-use App\Http\Responses\LogoutResponse;
 use App\Http\Requests\LoginRequest;
+use App\Http\Responses\LogoutResponse;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Fortify\Fortify;
-use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -43,11 +43,11 @@ class FortifyServiceProvider extends ServiceProvider
                 return null;
             }
 
-            if ($request->login_type === 'admin' && $user->admin_status != 1) {
+            if ($request->login_type === 'admin' && $user->admin_status !== 1) {
                 return null;
             }
 
-            if ($request->login_type === 'staff' && $user->admin_status != 0) {
+            if ($request->login_type === 'staff' && $user->admin_status !== 0) {
                 return null;
             }
 

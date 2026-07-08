@@ -1,7 +1,7 @@
 @extends('layouts.admin_app')
 
 @section('css')
-	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/date-navigation.css') }}">
     <link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
@@ -15,11 +15,12 @@
     <div class="date-navigation">
         <a
             class="date-navigation__link"
-            href="/admin/attendance/staff/{{ $user->id }}?month={{ $prevMonth }}"
+            href="{{ url('/admin/attendance/staff/' . $user->id . '?month=' . $prevMonth) }}"
         >
             <img
                 class="date-navigation__link-icon"
                 src="{{ asset('image/arrow.png') }}"
+                alt="前月"
             >
             前月
         </a>
@@ -27,16 +28,18 @@
             <img
                 class="date-navigation__current-icon"
                 src="{{ asset('image/calendar.png') }}"
+                alt="カレンダー"
             >
             {{ $month->format('Y/m') }}
         </span>
         <a
             class="date-navigation__link"
-            href="/admin/attendance/staff/{{ $user->id }}?month={{ $nextMonth }}"
+            href="{{ url('/admin/attendance/staff/' . $user->id . '?month=' . $nextMonth) }}"
         >
             <img
                 class="date-navigation__link-icon date-navigation__link-icon--rotate"
                 src="{{ asset('image/arrow.png') }}"
+                alt="翌月"
             >
             翌月
         </a>
@@ -54,7 +57,7 @@
                 <th class="list-table__center-align-text">退勤</th>
                 <th class="list-table__center-align-text">休憩</th>
                 <th class="list-table__center-align-text">合計</th>
-                <th class="list-table__center-align-text">詳細</th>
+                <th class="list-table__center-align-text list-table__right-space">詳細</th>
             </tr>
 
             @foreach ($dates as $date)
@@ -78,7 +81,7 @@
                     <td class="list-table__center-align-text">
                         {{ $attendance?->work_time }}
                     </td>
-                    <td class="list-table__center-align-text">
+                    <td class="list-table__center-align-text list-table__right-space">
                         @if ($attendance)
                             <a
                                 class="list-table__link"
@@ -95,7 +98,7 @@
     <div class="list-table__action">
         <form
             action="{{ url('/admin/attendance/staff/' . $user->id . '/export?month=' . $month->format('Y-m')) }}"
-            method="post"
+            method="POST"
             >
             @csrf
             <input class="list-table__button" type="submit" value="CSV出力">

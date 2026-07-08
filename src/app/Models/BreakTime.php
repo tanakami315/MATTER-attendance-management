@@ -20,7 +20,7 @@ class BreakTime extends Model
     ];
 
     /**
-     * Get the attendance which has the break times.
+     * Get the attendance for the break time.
      *
      * @return BelongsTo
      */

@@ -47,7 +47,7 @@ class AttendanceRequest extends FormRequest
                 'nullable',
                 'date_format:H:i',
             ],
-            'comment' =>[
+            'comment' => [
                 'required',
                 'max:255',
             ],
@@ -102,6 +102,8 @@ class AttendanceRequest extends FormRequest
             $startBreaks = $this->input('start_break', []);
             $endBreaks = $this->input('end_break', []);
 
+            $validBreaks = [];
+
             $breakIndexes = array_unique(array_merge(
                 array_keys($startBreaks),
                 array_keys($endBreaks)
@@ -111,7 +113,7 @@ class AttendanceRequest extends FormRequest
                 $startBreak = $startBreaks[$index] ?? null;
                 $endBreak = $endBreaks[$index] ?? null;
 
-                 // 休憩時間のフォーマットエラーがあればスキップ
+                // 休憩時間のフォーマットエラーがあればスキップ
                 if (
                     $validator->errors()->has("start_break.$index") ||
                     $validator->errors()->has("end_break.$index")
@@ -140,11 +142,50 @@ class AttendanceRequest extends FormRequest
                     );
                 }
 
+                if ($endBreak && $endBreak <= $this->clock_in) {
+                    $validator->errors()->add(
+                        "end_break.$index",
+                        '休憩時間が不適切な値です'
+                    );
+                }
+
                 if ($endBreak && $endBreak >= $this->clock_out) {
                     $validator->errors()->add(
                         "end_break.$index",
                         '休憩時間もしくは退勤時間が不適切な値です'
                     );
+                }
+
+                if (
+                    $startBreak &&
+                    $endBreak &&
+                    ! $validator->errors()->has("start_break.$index") &&
+                    ! $validator->errors()->has("end_break.$index")
+                ) {
+                    $validBreaks[] = [
+                        'index' => $index,
+                        'start' => $startBreak,
+                        'end' => $endBreak,
+                    ];
+                }
+            }
+
+            // 休憩時間の重複チェック
+            foreach ($validBreaks as $i => $breakA) {
+                foreach ($validBreaks as $j => $breakB) {
+                    if ($i >= $j) {
+                        continue;
+                    }
+
+                    if (
+                        $breakA['start'] < $breakB['end'] &&
+                        $breakB['start'] < $breakA['end']
+                    ) {
+                        $validator->errors()->add(
+                            "start_break.{$breakB['index']}",
+                            '休憩時間が重複しています'
+                        );
+                    }
                 }
             }
         });

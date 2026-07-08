@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthTokenController extends Controller
 {
     /**
-     * Create the token.
+     * Create an API authentication token.
      *
      * @param Request $request
      * @return JsonResponse

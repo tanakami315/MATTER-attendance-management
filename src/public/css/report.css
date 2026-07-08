@@ -3,32 +3,36 @@
     width: 900px;
 }
 
-.report-title {
+.report__title {
     font-size: 30px;
     font-weight:bold;
     line-height: 1.2;
 }
 
-.report-comment {
+.report__comment {
     font-size: 20px;
     font-weight:bold;
     line-height: 1.2;
+}
+
+.report-group {
+    margin-top: 30px;
 }
 
 .report-group__title {
     font-size: 20px;
     font-weight:bold;
-    line-height: 1.2;
 }
 
-.report-group__side {
+.report-group__box {
+    margin-top: 5px;
     display: flex;
     justify-content: space-between;
 }
 
 .report-group__item {
     width: 280px;
-    margin-top: 20px;
+    margin-top: 5px;
     padding: 5px 20px;
     background-color: #F0EFF2;
     border: 2px solid #E1E1E1;
@@ -38,7 +42,12 @@
 .item-title,
 .report-group__comment {
     font-size: 14px;
-    opacity: 0.5;
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+.item-title {
+    padding-top: 10px;
 }
 
 .item-content {
@@ -50,7 +59,6 @@
 
 .report-table {
     margin-top: 40px;
-    background: #ffffff;
     border-radius: 10px;
     letter-spacing: 0.15em;
 }

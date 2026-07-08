@@ -35,6 +35,7 @@ class UpdateAttendanceRecordRequest extends FormRequest
                     ->ignore($this->route('attendanceRecord'))
                     ->where(function ($query) use ($attendance) {
                         if (! $attendance) {
+                            // 勤怠が存在しない場合は一致するレコードを0件にする
                             return $query->whereRaw('1 = 0');
                         }
                         return $query->where('user_id', $attendance->user_id);

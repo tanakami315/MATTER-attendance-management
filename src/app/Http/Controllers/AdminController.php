@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AttendanceRequest;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrectRequest;
 use App\Models\User;
-use App\Http\Requests\AttendanceRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -65,21 +65,21 @@ class AdminController extends Controller
     /**
      * Show the detail of the attendance record for admin.
      *
-     * @param int $admin_id
+     * @param int $attendance_id
      * @return View
      */
     public function adminDetail(
-        int $admin_id
+        int $attendance_id
     ): View {
         $attendance = Attendance::with([
             'user',
             'breakTimes',
             'attendanceCorrectRequests.breakCorrectRequests',
-        ])->findOrFail($admin_id);
+        ])->findOrFail($attendance_id);
 
         $breakTimes = $attendance->breakTimes;
 
-        $attendanceCorrectRequest = $attendance-> attendanceCorrectRequests
+        $attendanceCorrectRequest = $attendance->attendanceCorrectRequests
             ->sortByDesc('created_at')
             ->first();
 
@@ -142,7 +142,7 @@ class AdminController extends Controller
      */
     public function adminStaffList(): View
     {
-        $users = User::where('admin_status',0)->get();
+        $users = User::where('admin_status', 0)->get();
         return view('admin.admin_staff_list', compact('users'));
     }
 
@@ -203,8 +203,6 @@ class AdminController extends Controller
     ): View {
         $tab = $request->query('tab');
 
-        $user = auth()->user();
-
         $query = AttendanceCorrectRequest::with('attendance.user');
 
         if ($tab === 'pending') {
@@ -223,17 +221,17 @@ class AdminController extends Controller
     /**
      * Show the detail of correct requests for admin.
      *
-     * @param int $admin_correct_request_id
+     * @param int $attendance_correct_request_id
      * @return View
      */
     public function adminRequestDetail(
-        int $admin_correct_request_id
+        int $attendance_correct_request_id
     ): View {
         $attendanceCorrectRequest = AttendanceCorrectRequest::with(
             'attendance.user',
             'breakCorrectRequests'
             )
-            ->findOrFail($admin_correct_request_id);
+            ->findOrFail($attendance_correct_request_id);
 
         return view(
             'admin.admin_request_detail',

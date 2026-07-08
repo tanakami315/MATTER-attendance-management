@@ -1,9 +1,9 @@
 @extends('layouts.staff_app')
 
 @section('css')
-	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/status-label.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/list.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/status-label.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/list.css') }}">
 @endsection
 
 @section('content')
@@ -15,13 +15,13 @@
         <div class="status-label__inner">
             <a
                 href="{{ url('/stamp_correction_request/list/?tab=pending') }}"
-                class="status-label__link {{ request('tab')=='pending'?' status-label__link--active' : '' }}"
+                class="status-label__link {{ request('tab') == 'pending'?' status-label__link--active' : '' }}"
             >
                 承認待ち
             </a>
             <a
                 href="{{ url('/stamp_correction_request/list/?tab=approved') }}"
-                class="status-label__link {{ request('tab')=='approved'?' status-label__link--active' : '' }}"
+                class="status-label__link {{ request('tab') == 'approved'?' status-label__link--active' : '' }}"
             >
                 承認済み
             </a>
@@ -71,4 +71,5 @@
             @endforeach
         </table>
     </div>
+</div>
 @endsection

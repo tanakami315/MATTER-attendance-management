@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AttendanceRecordResource;
 use App\Http\Requests\Api\V1\IndexAttendanceRecordRequest;
 use App\Http\Requests\Api\V1\StoreAttendanceRecordRequest;
 use App\Http\Requests\Api\V1\UpdateAttendanceRecordRequest;
-use App\Http\Resources\AttendanceRecordResource;
 use App\Models\Attendance;
 use Carbon\Carbon;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AttendanceRecordController extends Controller
@@ -57,7 +57,7 @@ class AttendanceRecordController extends Controller
      */
     public function show(
         int $attendanceRecord
-    ): AttendanceRecordResource|JsonResponse {
+    ): AttendanceRecordResource {
         $attendance = Attendance::with(
             'user',
             'breakTimes',
@@ -98,12 +98,12 @@ class AttendanceRecordController extends Controller
      *
      * @param UpdateAttendanceRecordRequest $request
      * @param int $attendanceRecord
-     * @return AttendanceRecordResource|JsonResponse
+     * @return AttendanceRecordResource
      */
     public function update(
         UpdateAttendanceRecordRequest $request,
         int $attendanceRecord
-    ): AttendanceRecordResource|JsonResponse {
+    ): AttendanceRecordResource {
         $attendance = Attendance::findOrFail($attendanceRecord);
 
         $this->authorize('update', $attendance);
@@ -126,11 +126,11 @@ class AttendanceRecordController extends Controller
      * Delete the attendance record for API.
      *
      * @param int $attendanceRecord
-     * @return JsonResponse|Response
+     * @return Response
      */
     public function destroy(
         int $attendanceRecord
-    ): JsonResponse|Response {
+    ): Response {
         $attendance = Attendance::findOrFail($attendanceRecord);
 
         $this->authorize('delete', $attendance);

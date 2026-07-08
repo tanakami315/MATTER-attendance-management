@@ -19,6 +19,7 @@ class AttendanceCorrectRequestFactory extends Factory
             'clock_in' => $this->faker->time(),
             'clock_out' => $this->faker->time(),
             'comment' => $this->faker->sentence(),
+            'status' => 0,
         ];
     }
 }

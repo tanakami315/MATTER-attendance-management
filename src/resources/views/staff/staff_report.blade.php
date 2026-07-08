@@ -6,16 +6,16 @@
 
 @section('content')
 <div class="report">
-    <h1 class="report-title">
+    <h1 class="report__title">
         マイ勤怠レポート
     </h1>
-    <span class="report-comment">
+    <span class="report__comment">
         過去6カ月の勤怠データから集計しています。
     </span>
 
     <div class="report-group">
-        <h2 class="report-group__title">基本サマリー</h2>
-        <div class="report-group__side">
+        <div class="report-group__title">基本サマリー</div>
+        <div class="report-group__box">
             <div class="report-group__item">
                 <div class="item-title">
                     総労働時間
@@ -44,14 +44,14 @@
     </div>
 
     <div class="report-group">
-        <h2 class="report-group__title">月次推移（過去6ヵ月）</h2>
+        <div class="report-group__title">月次推移（過去6ヵ月）</div>
         <table class="report-table__inner">
             <tr class="report-table__header">
                 <th class="report-table__left-align-text">月</th>
                 <th class="report-table__right-align-text">労働時間</th>
                 <th class="report-table__right-align-text">残業時間</th>
             </tr>
-            @foreach($monthlyTotals as $month => $total)
+            @foreach ($monthlyTotals as $month => $total)
                 <tr class="report-table__row">
                     <td class="report-table__left-align-text">{{ $month }}</td>
                     <td class="report-table__right-align-text">{{ $total['work_time'] }}</td>
@@ -62,11 +62,11 @@
     </div>
 
     <div class="report-group">
-        <h2 class="report-group__title">今月の異常検知</h2>
+        <div class="report-group__title">今月の異常検知</div>
         <p class="report-group__comment">
-            基準：始業 09:00 / 就業 18:00 / 長時間労働は1日10時間超
+            基準：始業 09:00 / 終業 18:00 / 長時間労働は1日10時間超
         </p>
-        <div class="report-group__side">
+        <div class="report-group__box">
             <div class="report-group__item">
                 <div class="item-title">
                     遅刻回数

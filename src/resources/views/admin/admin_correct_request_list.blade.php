@@ -16,13 +16,13 @@
         <div class="status-label__inner">
             <a
                 href="{{ url('/stamp_correction_request/list/?tab=pending') }}"
-                class="status-label__link {{ request('tab')=='pending'?' status-label__link--active' : '' }}"
+                class="status-label__link {{ request('tab') == 'pending'?' status-label__link--active' : '' }}"
             >
                 承認待ち
             </a>
             <a
                 href="{{ url('/stamp_correction_request/list/?tab=approved') }}"
-                class="status-label__link {{ request('tab')=='approved'?' status-label__link--active' : '' }}"
+                class="status-label__link {{ request('tab') == 'approved'?' status-label__link--active' : '' }}"
             >
                 承認済み
             </a>
@@ -32,16 +32,16 @@
     <div class="list-table">
         <table class="list-table__inner">
             <tr class="list-table__header">
-                <th class="list-table__left-align-text">状態</th>
+                <th class="list-table__left-align-text list-table__left-space">状態</th>
                 <th class="list-table__left-align-text">名前</th>
                 <th class="list-table__left-align-text">対象日時</th>
                 <th class="list-table__left-align-text">申請理由</th>
                 <th class="list-table__left-align-text">申請日時</th>
-                <th class="list-table__left-align-text">詳細</th>
+                <th class="list-table__left-align-text list-table__right-space">詳細</th>
             </tr>
             @foreach ($attendanceCorrectRequests as $attendanceCorrectRequest)
                 <tr class="list-table__row">
-                    <td class="list-table__left-align-text">
+                    <td class="list-table__left-align-text  list-table__left-space">
                         @if ($attendanceCorrectRequest->status == 0)
                             承認待ち
                         @elseif ($attendanceCorrectRequest->status == 1)
@@ -60,7 +60,7 @@
                     <td class="list-table__left-align-text">
                         {{ $attendanceCorrectRequest->created_at->format('Y/m/d') }}
                     </td>
-                    <td class="list-table__left-align-text">
+                    <td class="list-table__left-align-text list-table__right-space">
                         <a
                             class="list-table__link list-table__flex-link"
                             href="{{ url('/stamp_correction_request/approve/' . $attendanceCorrectRequest->id) }}"
@@ -72,5 +72,5 @@
             @endforeach
         </table>
     </div>
-</diV>
+</div>
 @endsection

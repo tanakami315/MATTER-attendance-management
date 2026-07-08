@@ -16,7 +16,7 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
-        if (auth()->user()->admin_status == 1) {
+        if (auth()->user()->admin_status === 1) {
             return redirect('/admin/attendance/list');
         }
 

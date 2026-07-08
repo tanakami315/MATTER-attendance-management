@@ -15,11 +15,12 @@
     <div class="date-navigation">
         <a
             class="date-navigation__link"
-            href="/attendance/list?month={{ $prevMonth }}"
+            href="{{ url('/attendance/list?month=' . $prevMonth) }}"
         >
             <img
                 class="date-navigation__link-icon"
                 src="{{ asset('image/arrow.png') }}"
+                alt="前月"
             >
             前月
         </a>
@@ -27,16 +28,18 @@
             <img
                 class="date-navigation__current-icon"
                 src="{{ asset('image/calendar.png') }}"
+                alt="カレンダー"
             >
             {{ $month->format('Y/m') }}
         </span>
         <a
             class="date-navigation__link"
-            href="/attendance/list?month={{ $nextMonth }}"
+            href="{{ url('/attendance/list?month=' . $nextMonth) }}"
         >
             <img
                 class="date-navigation__link-icon date-navigation__link-icon--rotate"
                 src="{{ asset('image/arrow.png') }}"
+                alt="翌月"
             >
             翌月
         </a>

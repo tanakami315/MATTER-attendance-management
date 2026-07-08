@@ -1,22 +1,17 @@
-@extends('layouts.staff_app')
+@extends('layouts.admin_app')
 
 @section('css')
-	<link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/detail.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/after-login-common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/detail.css') }}">
 @endsection
 
 @section('content')
-@php
-    $isPending = isset($attendance) && $attendanceCorrectRequest?->status === 0;
-@endphp
-
 <div class="card">
     <h1 class="title">
         勤怠詳細
     </h1>
-    <form action="/admin/approve/{{ $attendanceCorrectRequest->id }}" method="POST">
+    <form action="{{ url('/admin/approve/' . $attendanceCorrectRequest->id) }}" method="POST">
         @csrf
-        @method('POST')
         <div class="detail-table">
             <div class="detail-table__row">
                 <div class="detail-table__label">名前</div>
@@ -51,7 +46,7 @@
                 </div>
             </div>
 
-            @foreach($attendanceCorrectRequest->breakCorrectRequests as $breakCorrectRequest)
+            @foreach ($attendanceCorrectRequest->breakCorrectRequests as $breakCorrectRequest)
             <div class="detail-table__row">
                 <div class="detail-table__label">
                     休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
@@ -72,11 +67,13 @@
                 </div>
             </div>
         </div>
-        @if($attendanceCorrectRequest?->status === 0)
-            <div class="detail-table__action">
+        <div class="detail-table__action">
+            @if ($attendanceCorrectRequest?->status === 0)
                 <button class="detail-table__button" type="submit">承認</button>
-            </div>
-        @endif
+            @else
+                <div class="detail-table__approved-message">承認済み</div>
+            @endif
+        </div>
     </form>
 </div>
 @endsection

@@ -13,28 +13,29 @@
 - 管理者は一般ユーザーとしてログインすることはできません。
 - 夜勤（日をまたぐ勤務）は想定していません。
 - 本webアプリ上から勤怠登録をしていない日の修正や修正の申請をすることはできません。
-- 全ユーザーに対して、勤怠記録のダミーデータを作成するよう記載（開発プロセス 環境構築）がありますが、管理者の勤怠登録は想定していないため、意図して作成していません。
+- 全ユーザーに対して勤怠記録のダミーデータを作成するよう仕様書に記載がありますが、本アプリでは管理者は勤怠登録を行わない仕様としているため、管理者の勤怠データは意図的に作成していません。
 - 勤怠情報のテーブルはattendance_recordsではなく、attendancesとして作成しています。
+- 例外的に休憩時間について、テーブルはbreaks、モデルはBreakTimeとして作成しています。
 - API実装において、既存のテーブル名・モデル名との整合性を優先したため、一部名称が仕様書と異なります。
   - レスポンス項目名
     - 仕様書：total_time, total_break_time, breaks, applications
     - 実装：work_time, break_time, breakTimes, attendanceCorrectRequests
   - リソースクラス名
-    - 仕様書:AttendanceResource,AttendanceBreakResource, ApplicationResource
+    - 仕様書:AttendanceBreakResource, ApplicationResource
     - 実装:BreakTimeResource, AttendanceCorrectRequestResource
 
 ## 環境構築
 **Dockerビルド**
 1. `git clone git@github.com:tanakami315/MATTER-attendance-management.git`
-2. DockerDesktopアプリを立ち上げる
+2. Docker Desktopを立ち上げる
 3. `docker-compose up -d --build`
 
 **Laravel環境構築**
 1. `docker-compose exec php bash`
 2. `composer install`
 3. 「.env.example」ファイルをコピーして 「.env」ファイルを作成。
-4. .envで以下の環境変数を変更
-``` textit 
+4. .envで以下の環境変数を設定
+``` text
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
@@ -73,7 +74,7 @@ mysql -u root -p
 
 2. テスト用データベースの作成
 ``` MySQLログイン後
-CREATE DATABASE test_1;
+CREATE DATABASE test;
 ```
 3. 「.env」ファイルをコピーして 「.env.testing」ファイルを作成。
 
@@ -160,22 +161,22 @@ vendor/bin/phpunit
 - 勤怠修正申請
   - attendance_id:80
     - ユーザー1
-    - 勤務時間時間：8:00-18:00
+    - 勤務時間：8:00-18:00
     - 休憩時間：12:30-13:30
     - ステータス：承認待ち
   - attendance_id:150
     - ユーザー2
-    - 勤務時間時間：9:00-22:00
+    - 勤務時間：9:00-22:00
     - 休憩時間：12:30-13:30、19:00-19:30
     - ステータス：承認済み
   - attendance_id:177
     - ユーザー2
-    - 勤務時間時間：9:00-18:00
+    - 勤務時間：9:00-18:00
     - 休憩時間：12:30-13:30、19:00-19:30
     - ステータス：承認待ち
 
 ## URL
-- 開発環境：http://localhost
-  - 一般ユーザーログイン画面：http://localhost/login
-  - 管理者ログイン画面:：http://localhost/admin/login
-- Mailhog：http://localhost:8025
+- 開発環境: http://localhost
+  - 一般ユーザーログイン画面: http://localhost/login
+  - 管理者ログイン画面: http://localhost/admin/login
+- Mailhog: http://localhost:8025

@@ -28,7 +28,6 @@ class LoginRequest extends FortifyLoginRequest
                 'required',
                 'email',
             ],
-
             'password' => [
                 'required',
             ],

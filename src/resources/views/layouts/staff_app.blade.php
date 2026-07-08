@@ -20,34 +20,34 @@
             </div>
             <nav class="header__nav">
                 <a
-                    href="/attendance"
+                    href="{{ url('/attendance') }}"
                     class="header__nav-link
                         header__nav-link--common"
                 >
                     勤怠
                 </a>
                 <a
-                    href="/attendance/list"
+                    href="{{ url('/attendance/list') }}"
                     class="header__nav-link
                         header__nav-link--common"
                 >
                     勤怠一覧
                 </a>
                 <a
-                    href="/stamp_correction_request/list"
+                    href="{{ url('/stamp_correction_request/list') }}"
                     class="header__nav-link
                         header__nav-link--common"
                 >
                     申請
                 </a>
                 <a
-                    href="/attendance/report"
+                    href="{{ url('/attendance/report') }}"
                     class="header__nav-link
                         header__nav-link--common"
                 >
                     レポート
                 </a>
-                <form action="/logout" method="post">
+                <form action="{{ url('/logout') }}" method="POST">
                     @csrf
                     <button
                         class="header__nav-link
@@ -73,7 +73,7 @@
                 "positionClass": "toast-bottom-right",
             }
 
-            @if(Session::has('flashSuccess'))
+            @if (Session::has('flashSuccess'))
             toastr.success("{{ session('flashSuccess') }}");
             @endif
         </script>

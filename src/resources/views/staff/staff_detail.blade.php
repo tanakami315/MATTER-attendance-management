@@ -7,16 +7,15 @@
 
 @section('content')
 @php
-    $isPending = isset($attendance) && $attendanceCorrectRequest?->status === 0;
+    $isPending = $attendanceCorrectRequest?->status === 0;
 @endphp
 
 <div class="card">
     <h1 class="title">
         勤怠詳細
     </h1>
-    <form action="/stamp_correction_request/{{ $attendance->id }}" method="POST">
+    <form action="{{ url('/stamp_correction_request/' . $attendance->id ) }}" method="POST">
         @csrf
-        @method('POST')
         <div class="detail-table">
             <div class="detail-table__row">
                 <div class="detail-table__label">名前</div>
@@ -48,7 +47,7 @@
                             class="detail-table__input"
                             type="text"
                             name="clock_in"
-                            value="{{  old('clock_in', $attendance->clock_in?->format('H:i')) }}" 
+                            value="{{ old('clock_in', $attendance->clock_in?->format('H:i')) }}" 
                         >
                     @endif
                 </div>
@@ -70,7 +69,7 @@
             </div>
 
             @if ($isPending)
-                @foreach($breakCorrectRequests as $breakCorrectRequest)
+                @foreach ($breakCorrectRequests as $breakCorrectRequest)
                 <div class="detail-table__row">
                     <div class="detail-table__label">
                         休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
@@ -85,7 +84,7 @@
                 </div>
                 @endforeach
             @else
-                @foreach($breakTimes as $index => $breakTime)
+                @foreach ($breakTimes as $index => $breakTime)
                     <div class="detail-table__row">
                         <div class="detail-table__label">
                             休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}

@@ -7,13 +7,12 @@
 
 @section('content')
 	<div class="attendance-form">
-		<!-- 勤務前 -->
-		@if($status === 'before_work')
+		@if ($status === 'before_work')
 			<div class="attendance-form__status">勤務外</div>
 			<div class="attendance-form__date" id="current-date"></div>
 			<div class="attendance-form__time" id="current-time"></div>
 			<form
-				action="/start_work"
+				action="{{ url('/start_work') }}"
 				method="POST"
 			>
 				@csrf
@@ -25,14 +24,13 @@
 				</button>
 			</form>
 
-		<!-- 勤務中 -->
-		@elseif($status === 'working')
+		@elseif ($status === 'working')
 			<div class="attendance-form__status">出勤中</div>
 			<div class="attendance-form__date" id="current-date"></div>
 			<div class="attendance-form__time" id="current-time"></div>
 			<div class="attendance-form__button">
 				<form
-					action="/end_work"
+					action="{{ url('/end_work') }}"
 					method="POST"
 				>
 					@csrf
@@ -44,7 +42,7 @@
 					</button>
 				</form>
 				<form
-					action="/start_break"
+					action="{{ url('/start_break') }}"
 					method="POST"
 				>
 					@csrf
@@ -57,13 +55,12 @@
 				</form>
 			</div>
 
-		<!-- 休憩中 -->
-		@elseif($status === 'break')
+		@elseif ($status === 'break')
 			<div class="attendance-form__status">休憩中</div>
 			<div class="attendance-form__date" id="current-date"></div>
 			<div class="attendance-form__time" id="current-time"></div>
 			<form
-				action="/end_break"
+				action="{{ url('/end_break') }}"
 				method="POST"
 			>
 				@csrf
@@ -75,8 +72,7 @@
 				</button>
 			</form>
 
-		<!-- 勤務後 -->
-		@elseif($status === 'after_work')
+		@elseif ($status === 'after_work')
 			<div class="attendance-form__status">退勤済</div>
 			<div class="attendance-form__date" id="current-date"></div>
 			<div class="attendance-form__time" id="current-time"></div>

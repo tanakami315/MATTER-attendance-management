@@ -62,10 +62,11 @@ class StaffController extends Controller
      */
     public function start_work(): RedirectResponse
     {
-        $attendance['user_id'] = auth()->id();
-        $attendance['date'] = date('Y-m-d');
-        $attendance['clock_in'] = now();
-        Attendance::create($attendance);
+        Attendance::create([
+            'user_id' => auth()->id(),
+            'date' => today(),
+            'clock_in' => now(),
+        ]);
 
         return redirect('/attendance');
     }
@@ -77,10 +78,10 @@ class StaffController extends Controller
      */
     public function end_work(): RedirectResponse
     {
-        $attendance['clock_out'] = now();
         Attendance::where('user_id', auth()->id())
-            ->whereDate('date', today())
-            ->update($attendance);
+            ->update([
+                'clock_out' => now(),
+            ]);
         return redirect('/attendance');
     }
 
@@ -95,9 +96,10 @@ class StaffController extends Controller
             ->whereDate('date', today())
             ->first();
 
-        $break['attendance_id'] = $attendance->id;
-        $break['start_break'] = now();
-        BreakTime::create($break);
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'start_break' => now(),
+        ]);
 
         return redirect('/attendance');
     }
@@ -113,11 +115,11 @@ class StaffController extends Controller
             ->whereDate('date', today())
             ->first();
 
-        $break['attendance_id'] = $attendance->id;
-        $break['end_break'] = now();
         BreakTime::where('attendance_id', $attendance->id)
             ->whereNull('end_break')
-            ->update($break);
+            ->update([
+                'end_break' => now(),
+            ]);
 
         return redirect('/attendance');
     }
@@ -166,34 +168,27 @@ class StaffController extends Controller
     /**
      * Show the detail of the attendance record for staff.
      *
-     * @param int $id
+     * @param int $attendance_id
      * @return View
      */
-    public function detail(int $id): View
-    {
-        $attendance = Attendance::with('user','breakTimes')
-            ->findOrFail($id);
+    public function detail(
+        int $attendance_id
+    ): View {
+        $attendance = Attendance::with([
+            'user',
+            'breakTimes',
+            'attendanceCorrectRequests.breakCorrectRequests',
+        ])->findOrFail($attendance_id);
 
         $breakTimes = $attendance->breakTimes;
 
-        $attendanceCorrectRequest = AttendanceCorrectRequest::where(
-            'attendance_id',
-            $attendance->id
-            )
-            ->latest()
+        $attendanceCorrectRequest = $attendance->attendanceCorrectRequests
+            ->sortByDesc('created_at')
             ->first();
 
-        $breakCorrectRequests = null;
-
-        if ($attendanceCorrectRequest) {
-            $breakCorrectRequests = BreakCorrectRequest::where(
-                'attendance_correct_request_id',
-                $attendanceCorrectRequest->id
-                )
-                ->latest()
-                ->get();
-
-        }
+        $breakCorrectRequests = $attendanceCorrectRequest
+            ? $attendanceCorrectRequest->breakCorrectRequests
+            : collect();
 
         return view(
             'staff.staff_detail',
@@ -312,15 +307,12 @@ class StaffController extends Controller
                     return $attendance->clock_in && $attendance->clock_out;
                 });
 
-                // 総労働時間（1カ月）
                 $workMinutes = $completedAttendances->sum(function ($attendance) {
                     return $attendance->work_minutes;
                 });
 
-                // 就労日数（1カ月）
                 $workDays = $completedAttendances->count();
 
-                // 残業時間（分) 8時間超過分の和
                 $overtimeMinutes = $completedAttendances->sum(function ($attendance) {
                     return max(
                         0,
@@ -371,10 +363,6 @@ class StaffController extends Controller
                 now()->endOfMonth()
             );
         });
-
-        $lateCount = 0;
-        $earlyLeaveCount = 0;
-        $longWorkCount = 0;
 
         // 出退勤が終了している日数のみ抽出
         $completedThisMonthAttendances = $thisMonthAttendances->filter(function ($attendance) {

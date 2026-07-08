@@ -62,8 +62,8 @@ class Attendance extends Model
      */
     public function getBreakMinutesAttribute(): int
     {
-        return $this->breakTimes()->get()->sum(function ($breakTime) {
-            if (!$breakTime->start_break || !$breakTime->end_break) {
+        return $this->breakTimes->sum(function ($breakTime) {
+            if (!$breakTime->start_break || ! $breakTime->end_break) {
                 return 0;
             }
 
@@ -78,7 +78,7 @@ class Attendance extends Model
      */
     public function getWorkMinutesAttribute(): int
     {
-        if (!$this->clock_in || !$this->clock_out) {
+        if (!$this->clock_in || ! $this->clock_out) {
             return 0;
         }
 
