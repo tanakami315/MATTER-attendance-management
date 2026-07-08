@@ -84,11 +84,11 @@ CREATE DATABASE test;
 APP_ENV=testing
 APP_KEY=
 
-DB_DATABASE=test_1
+DB_DATABASE=test
 DB_USERNAME=root
 DB_PASSWORD=root
 ```
-※ APP_KEYは空のままにしてください。  
+※ APP_KEYは空のままにしてください。
 後述のコマンドでテスト用キーを生成します。
 
 5. テスト用アプリケーションキーの作成
