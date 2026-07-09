@@ -70,18 +70,18 @@
 
             @if ($isPending)
                 @foreach ($breakCorrectRequests as $breakCorrectRequest)
-                <div class="detail-table__row">
-                    <div class="detail-table__label">
-                        休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
+                    <div class="detail-table__row">
+                        <div class="detail-table__label">
+                            休憩{{ $loop->iteration > 1 ? $loop->iteration : '' }}
+                        </div>
+                        <div class="detail-table__value">
+                            {{ $breakCorrectRequest?->start_break?->format('H:i') }}
+                        </div>
+                        <div class="detail-table__mark">～</div>
+                        <div class="detail-table__value">
+                            {{ $breakCorrectRequest?->end_break?->format('H:i') }}
+                        </div>
                     </div>
-                    <div class="detail-table__value">
-                        {{ $breakCorrectRequest?->start_break?->format('H:i') }}
-                    </div>
-                    <div class="detail-table__mark">～</div>
-                    <div class="detail-table__value">
-                        {{ $breakCorrectRequest?->end_break?->format('H:i') }}
-                    </div>
-                </div>
                 @endforeach
             @else
                 @foreach ($breakTimes as $index => $breakTime)
