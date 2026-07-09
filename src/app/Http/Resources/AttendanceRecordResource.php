@@ -25,11 +25,8 @@ class AttendanceRecordResource extends JsonResource
             'break_time' => $this->break_time,
             'comment' => $this->comment,
 
-            'breakTimes' => $this->when(
-                $request->routeIs('attendance-records.show'),
-                function () {
-                    return BreakTimeResource::collection($this->breakTimes);
-                }
+            'breakTimes' => BreakTimeResource::collection(
+                $this->whenLoaded('breakTimes')
             ),
 
             'attendanceCorrectRequests' => AttendanceCorrectRequestResource::collection(
