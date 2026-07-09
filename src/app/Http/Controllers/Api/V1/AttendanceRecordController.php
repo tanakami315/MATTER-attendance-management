@@ -26,15 +26,19 @@ class AttendanceRecordController extends Controller
     ): AnonymousResourceCollection {
         $perPage = min((int) $request->query('per_page', 20), 100);
 
+        $userId = $request->query('user_id');
+        $date = $request->query('date');
+        $month = $request->query('month');
+
         $query = Attendance::with('user')
-            ->when($request->filled('user_id'), function ($query) use ($request) {
-                $query->where('user_id', $request->user_id);
+            ->when($userId, function ($query) use ($userId) {
+                $query->where('user_id', $userId);
             })
-            ->when($request->filled('date'), function ($query) use ($request) {
-                $query->whereDate('date', $request->date);
+            ->when($date, function ($query) use ($date) {
+                $query->whereDate('date', $date);
             })
-            ->when($request->filled('month'), function ($query) use ($request) {
-                $month = Carbon::parse($request->month);
+            ->when($month, function ($query) use ($month) {
+                $month = Carbon::parse($month);
 
                 $query->whereBetween('date', [
                     $month->copy()->startOfMonth(),
